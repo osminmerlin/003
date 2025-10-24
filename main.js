@@ -1,18 +1,17 @@
-// 轻打卡系统 - v1.0
-// Author: Copilot
+// 轻打卡系统 - v2.0
+// 固定提醒内容，提醒间隔1-360分钟
 
-// ======= 数据结构 =======
 const LS_KEY = 'habitCheckInData';
 const DEFAULT_CONFIG = {
   habitName: '吸烟',
-  notifyTitle: '该打卡啦',
+  notifyTitle: '吸烟时间到了，快去吸烟。',
   remindInterval: 60 // 分钟
 };
 let config = {...DEFAULT_CONFIG};
-let records = []; // { timestamp, localDate }
+let records = [];
 let remindTimer = null;
 
-// ======= 初始化 =======
+// 初始化加载
 function loadData() {
   const raw = localStorage.getItem(LS_KEY);
   if (raw) {
@@ -25,13 +24,10 @@ function saveData() {
   localStorage.setItem(LS_KEY, JSON.stringify({records, config}));
 }
 function updateUI() {
-  // 打卡名称
   document.getElementById('habit-name').textContent = config.habitName;
-  // 今日打卡次数、平均间隔
   const todayRecs = getTodayRecords();
   document.getElementById('today-count').textContent = `今日打卡次数：${todayRecs.length}`;
   document.getElementById('avg-interval').textContent = `平均间隔：${calcAvgInterval(todayRecs)} 分钟`;
-  // 最近5次打卡
   updateRecentRecords();
 }
 function updateRecentRecords() {
@@ -68,14 +64,14 @@ function calcAvgInterval(recs) {
   return Math.round(total / (recs.length-1));
 }
 
-// ======= 打卡功能 =======
+// 打卡功能
 document.getElementById('checkin-btn').onclick = () => {
   const ts = Date.now();
   records.push({timestamp: ts, localDate: new Date(ts).toLocaleDateString()});
   saveData();
   updateUI();
   showFloatingNotice('打卡成功');
-  sendBrowserNotify(`${config.notifyTitle}：${config.habitName}已打卡`);
+  sendBrowserNotify(DEFAULT_CONFIG.notifyTitle);
 };
 function showFloatingNotice(msg) {
   const bar = document.getElementById('floating-notice');
@@ -84,7 +80,7 @@ function showFloatingNotice(msg) {
   setTimeout(()=>{bar.style.display='none'}, 2000);
 }
 
-// ======= 浏览器通知 =======
+// 浏览器通知
 function sendBrowserNotify(msg) {
   if (Notification.permission === 'granted') {
     new Notification(msg);
@@ -96,31 +92,34 @@ function askNotificationPermission() {
   }
 }
 
-// ======= 智能提醒系统 =======
+// 智能提醒系统
 function startRemindTimer() {
   clearRemindTimer();
   remindTimer = setInterval(()=>{
-    sendBrowserNotify(config.notifyTitle || '该打卡啦');
-    showFloatingNotice('提醒：记得打卡');
+    sendBrowserNotify(DEFAULT_CONFIG.notifyTitle);
+    showFloatingNotice('提醒：' + DEFAULT_CONFIG.notifyTitle);
   }, config.remindInterval * 60000);
 }
 function clearRemindTimer() {
   if (remindTimer) clearInterval(remindTimer);
 }
 
-// ======= 设置模态框 =======
+// 设置模态框
 document.getElementById('settings-btn').onclick = () => {
   showModal('settings-modal');
   document.getElementById('input-habit-name').value = config.habitName;
-  document.getElementById('input-notify-title').value = config.notifyTitle;
+  document.getElementById('input-notify-title').value = DEFAULT_CONFIG.notifyTitle;
+  document.getElementById('input-notify-title').setAttribute('readonly', 'readonly');
   document.getElementById('input-remind-interval').value = config.remindInterval;
+  document.getElementById('input-remind-interval').setAttribute('min', '1');
+  document.getElementById('input-remind-interval').setAttribute('max', '360');
 };
 document.getElementById('close-settings').onclick = () => closeModal('settings-modal');
 document.getElementById('save-settings').onclick = () => {
   config.habitName = document.getElementById('input-habit-name').value || DEFAULT_CONFIG.habitName;
-  config.notifyTitle = document.getElementById('input-notify-title').value || DEFAULT_CONFIG.notifyTitle;
+  config.notifyTitle = DEFAULT_CONFIG.notifyTitle;
   const interval = Number(document.getElementById('input-remind-interval').value);
-  config.remindInterval = Math.min(Math.max(interval,5),240) || DEFAULT_CONFIG.remindInterval;
+  config.remindInterval = Math.min(Math.max(interval,1),360) || DEFAULT_CONFIG.remindInterval;
   saveData();
   closeModal('settings-modal');
   updateUI();
@@ -129,7 +128,7 @@ document.getElementById('save-settings').onclick = () => {
   showFloatingNotice('设置已保存');
 };
 
-// ======= 报告模态框 =======
+// 报告模态框
 document.getElementById('report-btn').onclick = () => {
   showModal('report-modal');
   showReportTab('day');
@@ -143,12 +142,10 @@ function showReportTab(tab) {
   ['day','month','year'].forEach(t=>{
     document.getElementById(`${t}-chart`).style.display = (t===tab?'':'none');
   });
-  // 统计指标
   document.getElementById('report-stats').innerHTML = calcReportStats(tab);
 }
 function calcReportStats(tab) {
   if (records.length === 0) return '<div>暂无数据</div>';
-  // 峰值时段、平均频率、总打卡天数
   if (tab==='day') {
     const todayRecs = getTodayRecords();
     const hours = todayRecs.map(r=>new Date(r.timestamp).getHours());
@@ -192,7 +189,6 @@ function countRecordsYear() {
   return records.filter(r=>new Date(r.timestamp).getFullYear()===now.getFullYear()).length;
 }
 function renderCharts() {
-  // 每日报告: 24小时分布
   const todayRecs = getTodayRecords();
   const hours = Array(24).fill(0);
   todayRecs.forEach(r=>{
@@ -200,7 +196,6 @@ function renderCharts() {
   });
   drawBarChart('day-chart', Array.from({length:24},(_,i)=>i+'点'), hours, '每小时打卡分布');
 
-  // 每月报告：30天趋势
   const now = new Date();
   const days = Array(30).fill(0);
   records.forEach(r=>{
@@ -211,7 +206,6 @@ function renderCharts() {
   });
   drawLineChart('month-chart', Array.from({length:30},(_,i)=>`${i+1}日`), days, '每月打卡趋势');
 
-  // 每年报告：12个月分布
   const months = Array(12).fill(0);
   records.forEach(r=>{
     const d = new Date(r.timestamp);
@@ -239,24 +233,18 @@ function drawLineChart(canvasId, labels, data, title) {
   });
 }
 
-// ======= 模态框交互 =======
+// 模态框
 function showModal(id) {
   document.getElementById(id).style.display = 'block';
 }
 function closeModal(id) {
   document.getElementById(id).style.display = 'none';
 }
-
-// ======= 响应式主题 =======
 function setTheme() {
-  // iOS风格配色
   document.body.className = 'ios-theme';
 }
 
-// ======= 空状态处理 =======
-// 已在 recent-records 和 report-stats 里实现
-
-// ======= 启动 =======
+// 启动
 loadData();
 setTheme();
 updateUI();
