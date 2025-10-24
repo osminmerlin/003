@@ -8,10 +8,8 @@ module.exports = (req, res) => {
   if (fs.existsSync(SUBS_FILE)) {
     subscriptions = JSON.parse(fs.readFileSync(SUBS_FILE));
   }
-  const sub = req.body;
-  if (!subscriptions.find(s => s.endpoint === sub.endpoint)) {
-    subscriptions.push(sub);
-    fs.writeFileSync(SUBS_FILE, JSON.stringify(subscriptions));
-  }
+  const endpoint = req.body.endpoint;
+  subscriptions = subscriptions.filter(s => s.endpoint !== endpoint);
+  fs.writeFileSync(SUBS_FILE, JSON.stringify(subscriptions));
   res.status(201).end();
 };
