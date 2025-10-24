@@ -5,7 +5,11 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
   <title>轻打卡系统</title>
   <link rel="stylesheet" href="style.css">
-  <!-- Chart.js CDN -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#007aff">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
@@ -33,12 +37,15 @@
     <section id="report-section">
       <button id="report-btn">查看数据报告</button>
     </section>
+    <div id="ios-tip" style="display:none; background:#fffbe7; color:#c88c00; padding:12px; border-radius:10px; margin:15px; font-size:1.01rem;">
+      ⚠️ 提示：iPhone锁屏或后台时，网页无法发送系统级提醒。建议将本页面“添加到主屏幕”并保持前台，或使用原生App实现强提醒。
+    </div>
+    <section style="margin:20px 0;">
+      <button id="subscribe-push">允许后端推送</button>
+      <button id="unsubscribe-push" style="display:none;">取消后端推送</button>
+    </section>
   </main>
-
-  <!-- 顶部浮动通知条 -->
   <div id="floating-notice" style="display:none;"></div>
-
-  <!-- 设置模态框 -->
   <div class="modal" id="settings-modal">
     <div class="modal-content">
       <span class="close" id="close-settings">&times;</span>
@@ -53,8 +60,6 @@
       <button id="save-settings">保存设置</button>
     </div>
   </div>
-
-  <!-- 报告模态框 -->
   <div class="modal" id="report-modal">
     <div class="modal-content" style="max-width:400px;">
       <span class="close" id="close-report">&times;</span>
@@ -72,7 +77,17 @@
       <div id="report-stats"></div>
     </div>
   </div>
-
   <script src="main.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js');
+    }
+    function isiOS() {
+      return /iPhone|iPad|iPod/i.test(navigator.userAgent);
+    }
+    window.onload = function() {
+      if (isiOS()) document.getElementById('ios-tip').style.display = '';
+    };
+  </script>
 </body>
 </html>

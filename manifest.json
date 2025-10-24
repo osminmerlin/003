@@ -1,0 +1,13 @@
+{
+  "name": "轻打卡系统",
+  "short_name": "打卡",
+  "start_url": "index.html",
+  "display": "standalone",
+  "theme_color": "#007aff",
+  "background_color": "#f6f7fb",
+  "description": "轻量级日常打卡记录与提醒系统，支持PWA安装。",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
