@@ -786,4 +786,33 @@ window.addEventListener('load', function() {
         duration: 600,
         easing: 'easeOutQuart'
     });
+    
+    // 注册PWA服务
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js')
+            .then(registration => console.log('SW registered'))
+            .catch(registrationError => console.log('SW registration failed'));
+    }
 });
+
+// PWA安装提示
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+});
+
+// iOS Safari PWA安装提示
+if ('standalone' in window.navigator && window.navigator.standalone) {
+    // 应用已在独立模式运行
+} else if (navigator.userAgent.match(/iPhone|iPad|iPod/i)) {
+    // 显示iOS安装提示
+    const iosInstallBanner = document.createElement('div');
+    iosInstallBanner.innerHTML = `
+        <div style="position: fixed; top: 0; left: 0; right: 0; background: #10B981; color: white; padding: 12px; text-align: center; z-index: 1000; font-size: 14px;">
+            📱 点击分享按钮 ↗️ 然后选择 "添加到主屏幕" 来安装应用
+            <button onclick="this.parentElement.style.display='none'" style="margin-left: 10px; background: none; border: none; color: white; font-size: 18px;">×</button>
+        </div>
+    `;
+    document.body.appendChild(iosInstallBanner);
+}
