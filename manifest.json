@@ -1,35 +1,12 @@
 {
   "name": "烟迹终结者",
-  "short_name": "烟迹终结者",
-  "description": "通过记录实现反向戒烟的健康应用",
+  "short_name": "烟迹",
+  "description": "记录今日，见证改变",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#10B981",
-  "orientation": "portrait-primary",
-  "scope": "/",
-  "lang": "zh-CN",
+  "background_color": "#34C759",
+  "theme_color": "#34C759",
   "icons": [
-    {
-      "src": "icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
-  ],
-  "categories": ["health", "lifestyle", "medical"],
-  "screenshots": [
-    {
-      "src": "screenshot-mobile.png",
-      "sizes": "390x844",
-      "type": "image/png",
-      "form_factor": "narrow"
-    }
+    { "src": "apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
   ]
 }

@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>烟迹终结者</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#34C759">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="manifest" href="manifest.json">
+  <style>
+    :root{
+      --primary:#34C759;
+      --bg:#F2F7F4;
+      --card:#FFFFFF;
+      --text:#1C1C1E;
+      --sub:#8E8E93;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif}
+    body{background:var(--bg);color:var(--text);padding-bottom:env(safe-area-inset-bottom)}
+    .screen{min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:32px 24px 40px}
+    h1{font-size:28px;font-weight:600;margin-bottom:24px}
+    .card{width:100%;background:var(--card);border-radius:24px;padding:24px;box-shadow:0 8px 24px rgba(0,0,0,.06);margin-bottom:24px}
+    .ring{position:relative;width:180px;height:180px;margin:0 auto 24px}
+    .ring svg{transform:rotate(-90deg)}
+    .ring-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:48px;font-weight:600}
+    .btn{width:100%;height:56px;border-radius:16px;border:0;background:var(--primary);color:#fff;font-size:18px;font-weight:600;box-shadow:0 4px 12px rgba(52,199,89,.3);transition:transform .15s}
+    .btn:active{transform:scale(.96)}
+    .row{display:flex;justify-content:space-between;margin-top:16px;font-size:15px;color:var(--sub)}
+    .settings{position:fixed;top:12px;right:12px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.7);backdrop-filter:blur(20px);display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+    input{width:100%;padding:12px 16px;border:1px solid #E5E5EA;border-radius:12px;margin-top:8px;font-size:16px}
+    label{font-size:14px;color:var(--sub);margin-top:16px;display:block}
+    .hidden{display:none}
+  </style>
+</head>
+<body>
+  <!-- 启动屏 -->
+  <div id="splash" class="screen" style="justify-content:center; background:var(--primary); color:#fff">
+    <div style="font-size:48px;font-weight:700">烟迹终结者</div>
+  </div>
+
+  <!-- 首页 -->
+  <div id="home" class="screen hidden">
+    <div class="settings" onclick="showSettings()">⚙️</div>
+    <h1>今日</h1>
+    <div class="card">
+      <div class="ring">
+        <svg width="180" height="180">
+          <circle cx="90" cy="90" r="80" stroke="#E5E5EA" stroke-width="12" fill="none"/>
+          <circle id="progress" cx="90" cy="90" r="80" stroke="#34C759" stroke-width="12" fill="none" stroke-dasharray="502.4" stroke-dashoffset="502.4" stroke-linecap="round"/>
+        </svg>
+        <div class="ring-num"><span id="todayCount">0</span></div>
+      </div>
+      <button class="btn" onclick="addOne()">+1 今日已抽</button>
+      <div class="row">
+        <span>基准 <b id="base">20</b></span>
+        <span>少抽 <b id="less">0</b></span>
+      </div>
+      <div class="row">
+        <span>节省 ¥<b id="save">0.00</b></span>
+        <span>恢复 <b id="recover">0</b>%</span>
+      </div>
+    </div>
+    <div class="card" style="text-align:center;font-size:14px;color:var(--sub)">抽得越少，恢复越快</div>
+  </div>
+
+  <!-- 设置 -->
+  <div id="settings" class="screen hidden">
+    <h1>设置</h1>
+    <div class="card">
+      <label>烟龄（年）</label>
+      <input id="age" type="number" placeholder="例如 5">
+      <label>基准每日支数</label>
+      <input id="baseDaily" type="number" placeholder="例如 20">
+      <label>每盒价格（元）</label>
+      <input id="price" type="number" placeholder="例如 25">
+      <label>每盒支数</label>
+      <input id="perPack" type="number" placeholder="20">
+      <button class="btn" onclick="saveSettings()">保存</button>
+      <button class="btn" style="margin-top:12px;background:#FF3B30" onclick="showHome()">返回</button>
+    </div>
+  </div>
+
+  <script>
+    // 工具
+    const $ = q => document.querySelector(q);
+    const storage = window.localStorage;
+    const keys = {age:'age',base:'baseDaily',price:'price',perPack:'perPack',today:'today',records:'records'};
+    let state = {};
+
+    function loadState(){
+      state.age = +storage.getItem(keys.age) || 0;
+      state.base = +storage.getItem(keys.base) || 20;
+      state.price = +storage.getItem(keys.price) || 25;
+      state.perPack = +storage.getItem(keys.perPack) || 20;
+      state.today = +storage.getItem(keys.today) || 0;
+      state.records = JSON.parse(storage.getItem(keys.records)||'[]');
+    }
+    function saveToday(){
+      storage.setItem(keys.today, state.today);
+      storage.setItem(keys.records, JSON.stringify(state.records));
+    }
+    function calc(){
+      const less = Math.max(0, state.base - state.today);
+      const save = less / state.perPack * state.price;
+      const recover = Math.min(100, Math.round(less * 3.3)); // 伪算法
+      $('#less').textContent = less;
+      $('#save').textContent = save.toFixed(2);
+      $('#recover').textContent = recover;
+      const pct = state.base ? (state.today/state.base)*100 : 0;
+      const offset = 502.4 - (502.4 * pct / 100);
+      $('#progress').style.strokeDashoffset = offset;
+    }
+    function showHome(){
+      $('#splash').classList.add('hidden');
+      $('#settings').classList.add('hidden');
+      $('#home').classList.remove('hidden');
+      calc();
+    }
+    function showSettings(){
+      $('#home').classList.add('hidden');
+      $('#settings').classList.remove('hidden');
+      $('#age').value = state.age;
+      $('#baseDaily').value = state.base;
+      $('#price').value = state.price;
+      $('#perPack').value = state.perPack;
+    }
+    function saveSettings(){
+      state.age = +$('#age').value || 0;
+      state.base = +$('#baseDaily').value || 20;
+      state.price = +$('#price').value || 25;
+      state.perPack = +$('#perPack').value || 20;
+      storage.setItem(keys.age, state.age);
+      storage.setItem(keys.base, state.base);
+      storage.setItem(keys.price, state.price);
+      storage.setItem(keys.perPack, state.perPack);
+      showHome();
+    }
+    function addOne(){
+      state.today += 1;
+      $('#todayCount').textContent = state.today;
+      saveToday();
+      calc();
+    }
+    function archiveToday(){
+      const key = new Date().toISOString().slice(0,10);
+      const idx = state.records.findIndex(r=>r.date===key);
+      const item = {date:key, today:state.today, less:Math.max(0,state.base-state.today), save:Math.max(0,state.base-state.today)/state.perPack*state.price};
+      if(idx>=0) state.records[idx]=item; else state.records.push(item);
+      saveToday();
+    }
+    // 初始化
+    loadState();
+    // 每日归档
+    const todayKey = new Date().toISOString().slice(0,10);
+    const last = state.records.find(r=>r.date===todayKey);
+    if(last && last.today !== state.today) archiveToday();
+    if(!last) archiveToday();
+    $('#todayCount').textContent = state.today;
+    $('#base').textContent = state.base;
+    // 启动屏 1.2s 后进入
+    setTimeout(showHome,1200);
+  </script>
+</body>
+</html>
