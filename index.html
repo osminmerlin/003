@@ -12,82 +12,131 @@
   <style>
     :root{
       --primary:#34C759;
+      --secondary:#5AC8FA;
+      --warn:#FF9500;
+      --danger:#FF3B30;
       --bg:#F2F7F4;
-      --card:#FFFFFF;
+      --card:rgba(255,255,255,0.75);
       --text:#1C1C1E;
       --sub:#8E8E93;
     }
     *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif}
-    body{background:var(--bg);color:var(--text);padding-bottom:env(safe-area-inset-bottom)}
-    .screen{min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:32px 24px 40px}
+    body{background:var(--bg);color:var(--text)}
+    .screen{min-height:100vh;display:flex;flex-direction:column;padding:32px 24px 40px;backdrop-filter:blur(20px)}
     h1{font-size:28px;font-weight:600;margin-bottom:24px}
     .card{width:100%;background:var(--card);border-radius:24px;padding:24px;box-shadow:0 8px 24px rgba(0,0,0,.06);margin-bottom:24px}
-    .ring{position:relative;width:180px;height:180px;margin:0 auto 24px}
-    .ring svg{transform:rotate(-90deg)}
-    .ring-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:48px;font-weight:600}
-    .btn{width:100%;height:56px;border-radius:16px;border:0;background:var(--primary);color:#fff;font-size:18px;font-weight:600;box-shadow:0 4px 12px rgba(52,199,89,.3);transition:transform .15s}
-    .btn:active{transform:scale(.96)}
-    .row{display:flex;justify-content:space-between;margin-top:16px;font-size:15px;color:var(--sub)}
-    .settings{position:fixed;top:12px;right:12px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.7);backdrop-filter:blur(20px);display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
-    input{width:100%;padding:12px 16px;border:1px solid #E5E5EA;border-radius:12px;margin-top:8px;font-size:16px}
-    label{font-size:14px;color:var(--sub);margin-top:16px;display:block}
+    .btn{width:100%;height:56px;border-radius:16px;border:0;background:var(--primary);color:#fff;font-size:18px;font-weight:600;box-shadow:0 4px 12px rgba(52,199,89,.3)}
+    .btn:active{opacity:.8}
+    .btn-secondary{background:var(--secondary)}
+    .btn-warn{background:var(--warn)}
+    .btn-danger{background:var(--danger)}
+    .mini-chart{height:60px;display:flex;align-items:flex-end;justify-content:space-between}
+    .bar{width:14px;background:var(--primary);border-radius:4px;opacity:.6;margin:0 1px}
     .hidden{display:none}
+    .flex{display:flex;gap:12px}
+    .flex>button{flex:1}
+    .timeline{max-height:200px;overflow-y:auto}
+    .timeline-item{padding:12px 0;border-bottom:1px solid rgba(0,0,0,.05);font-size:14px;color:var(--sub)}
+    .emotion span{margin-right:6px}
+    .particle-map{position:relative;width:100%;height:200px;background:var(--bg);border-radius:16px;overflow:hidden}
+    #canvasMap{width:100%;height:100%}
+    .record-popup{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-radius:24px 24px 0 0;padding:24px;box-shadow:0 -4px 24px rgba(0,0,0,.1);transform:translateY(100%);transition:transform .3s}
+    .record-popup.show{transform:translateY(0)}
+    .emotion-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:12px}
+    .emotion-item{text-align:center;padding:12px;border-radius:12px;background:rgba(0,0,0,.03);font-size:14px}
+    .emotion-item.selected{background:var(--primary);color:#fff}
+    textarea{width:100%;min-height:60px;margin-top:12px;padding:12px;border:1px solid #E5E5EA;border-radius:12px;resize:none;font-size:16px}
+    .media-preview{display:flex;gap:8px;margin-top:8px}
+    .media-preview img{height:60px;border-radius:8px}
   </style>
 </head>
 <body>
   <!-- 启动屏 -->
-  <div id="splash" class="screen" style="justify-content:center; background:var(--primary); color:#fff">
+  <div id="splash" class="screen" style="justify-content:center;background:var(--primary);color:#fff">
     <div style="font-size:48px;font-weight:700">烟迹终结者</div>
   </div>
 
-  <!-- 首页 -->
-  <div id="home" class="screen hidden">
-    <div class="settings" onclick="showSettings()">⚙️</div>
-    <h1>今日</h1>
+  <!-- 仪表盘 -->
+  <div id="dashboard" class="screen hidden">
     <div class="card">
-      <div class="ring">
-        <svg width="180" height="180">
-          <circle cx="90" cy="90" r="80" stroke="#E5E5EA" stroke-width="12" fill="none"/>
-          <circle id="progress" cx="90" cy="90" r="80" stroke="#34C759" stroke-width="12" fill="none" stroke-dasharray="502.4" stroke-dashoffset="502.4" stroke-linecap="round"/>
-        </svg>
-        <div class="ring-num"><span id="todayCount">0</span></div>
-      </div>
-      <button class="btn" onclick="addOne()">+1 今日已抽</button>
-      <div class="row">
-        <span>基准 <b id="base">20</b></span>
-        <span>少抽 <b id="less">0</b></span>
-      </div>
-      <div class="row">
-        <span>节省 ¥<b id="save">0.00</b></span>
-        <span>恢复 <b id="recover">0</b>%</span>
+      <div class="flex">
+        <div style="flex:1">
+          <div style="font-size:14px;color:var(--sub)">今日花费</div>
+          <div style="font-size:24px;font-weight:600">¥<span id="costToday">0.00</span></div>
+        </div>
+        <div style="flex:1">
+          <div style="font-size:14px;color:var(--sub)">克制次数</div>
+          <div style="font-size:24px;font-weight:600"><span id="resist">0</span></div>
+        </div>
+        <div style="flex:1">
+          <div style="font-size:14px;color:var(--sub)">健康警告</div>
+          <div id="healthWarn" style="font-size:24px;font-weight:600;color:var(--primary)">优</div>
+        </div>
       </div>
     </div>
-    <div class="card" style="text-align:center;font-size:14px;color:var(--sub)">抽得越少，恢复越快</div>
+    <div class="card">
+      <div style="font-size:16px;font-weight:600;margin-bottom:12px">本周趋势</div>
+      <div class="mini-chart" id="weekTrend"></div>
+    </div>
+    <div class="card">
+      <div style="font-size:16px;font-weight:600;margin-bottom:12px">最近记录</div>
+      <div class="timeline" id="timeline"></div>
+    </div>
+    <div class="flex">
+      <button class="btn" onclick="showRecord()">记录一支</button>
+      <button class="btn btn-secondary" onclick="showAnalysis()">分析更多</button>
+    </div>
   </div>
 
-  <!-- 设置 -->
-  <div id="settings" class="screen hidden">
-    <h1>设置</h1>
-    <div class="card">
-      <label>烟龄（年）</label>
-      <input id="age" type="number" placeholder="例如 5">
-      <label>基准每日支数</label>
-      <input id="baseDaily" type="number" placeholder="例如 20">
-      <label>每盒价格（元）</label>
-      <input id="price" type="number" placeholder="例如 25">
-      <label>每盒支数</label>
-      <input id="perPack" type="number" placeholder="20">
-      <button class="btn" onclick="saveSettings()">保存</button>
-      <button class="btn" style="margin-top:12px;background:#FF3B30" onclick="showHome()">返回</button>
+  <!-- 记录弹层 -->
+  <div id="recordPopup" class="record-popup">
+    <div style="font-size:18px;font-weight:600;margin-bottom:12px">此刻情绪？</div>
+    <div class="emotion-grid">
+      <div class="emotion-item" data-emo="焦虑">😰 焦虑</div>
+      <div class="emotion-item" data-emo="无聊">😑 无聊</div>
+      <div class="emotion-item" data-emo="习惯">🔄 习惯</div>
+      <div class="emotion-item" data-emo="压力">😣 压力</div>
+      <div class="emotion-item" data-emo="低落">😞 低落</div>
+      <div class="emotion-item" data-emo="思考">🤔 思考</div>
+      <div class="emotion-item" data-emo="庆祝">🎉 庆祝</div>
+      <div class="emotion-item" data-emo="社交">🗣️ 社交</div>
     </div>
+    <textarea id="note" placeholder="语音/文字备注（可选）"></textarea>
+    <div class="flex" style="margin-top:12px">
+      <button class="btn btn-warn" onclick="startVoice()">🎤 语音</button>
+      <button class="btn btn-secondary" onclick="takePhoto()">📷 拍照</button>
+      <button class="btn" onclick="saveRecord()">保存</button>
+    </div>
+    <div class="media-preview" id="mediaPreview"></div>
+    <button class="btn btn-danger" style="margin-top:12px" onclick="closeRecord()">关闭</button>
+  </div>
+
+  <!-- 数据分析 -->
+  <div id="analysis" class="screen hidden">
+    <div class="card">
+      <div style="font-size:16px;font-weight:600;margin-bottom:12px">24h 吸烟热力图</div>
+      <div class="mini-chart" id="heatMap"></div>
+    </div>
+    <div class="card">
+      <div style="font-size:16px;font-weight:600;margin-bottom:12px">情绪触发分布</div>
+      <canvas id="emoPie" width="240" height="240"></canvas>
+    </div>
+    <div class="card">
+      <div style="font-size:16px;font-weight:600;margin-bottom:12px">烟迹地图（粒子扩散）</div>
+      <div class="particle-map"><canvas id="canvasMap"></canvas></div>
+    </div>
+    <button class="btn" onclick="showDashboard()">返回</button>
   </div>
 
   <script>
     // 工具
     const $ = q => document.querySelector(q);
     const storage = window.localStorage;
-    const keys = {age:'age',base:'baseDaily',price:'price',perPack:'perPack',today:'today',records:'records'};
-    let state = {};
+    const keys = {
+      age:'age',base:'base',price:'price',perPack:'perPack',
+      today:'today',records:'records',emotions:'emotions',media:'media'
+    };
+    let state = {records:[],emotions:{},media:[],today:0};
 
     function loadState(){
       state.age = +storage.getItem(keys.age) || 0;
@@ -96,71 +145,155 @@
       state.perPack = +storage.getItem(keys.perPack) || 20;
       state.today = +storage.getItem(keys.today) || 0;
       state.records = JSON.parse(storage.getItem(keys.records)||'[]');
+      state.emotions = JSON.parse(storage.getItem(keys.emotions)||'{}');
+      state.media = JSON.parse(storage.getItem(keys.media)||'[]');
     }
     function saveToday(){
       storage.setItem(keys.today, state.today);
       storage.setItem(keys.records, JSON.stringify(state.records));
+      storage.setItem(keys.emotions, JSON.stringify(state.emotions));
+      storage.setItem(keys.media, JSON.stringify(state.media));
     }
-    function calc(){
-      const less = Math.max(0, state.base - state.today);
-      const save = less / state.perPack * state.price;
-      const recover = Math.min(100, Math.round(less * 3.3)); // 伪算法
-      $('#less').textContent = less;
-      $('#save').textContent = save.toFixed(2);
-      $('#recover').textContent = recover;
-      const pct = state.base ? (state.today/state.base)*100 : 0;
-      const offset = 502.4 - (502.4 * pct / 100);
-      $('#progress').style.strokeDashoffset = offset;
-    }
-    function showHome(){
+    function showDashboard(){
       $('#splash').classList.add('hidden');
-      $('#settings').classList.add('hidden');
-      $('#home').classList.remove('hidden');
-      calc();
+      $('#analysis').classList.add('hidden');
+      $('#dashboard').classList.remove('hidden');
+      updateDashboard();
     }
-    function showSettings(){
-      $('#home').classList.add('hidden');
-      $('#settings').classList.remove('hidden');
-      $('#age').value = state.age;
-      $('#baseDaily').value = state.base;
-      $('#price').value = state.price;
-      $('#perPack').value = state.perPack;
+    function showAnalysis(){
+      $('#dashboard').classList.add('hidden');
+      $('#analysis').classList.remove('hidden');
+      drawHeatMap();
+      drawEmoPie();
+      drawParticleMap();
     }
-    function saveSettings(){
-      state.age = +$('#age').value || 0;
-      state.base = +$('#baseDaily').value || 20;
-      state.price = +$('#price').value || 25;
-      state.perPack = +$('#perPack').value || 20;
-      storage.setItem(keys.age, state.age);
-      storage.setItem(keys.base, state.base);
-      storage.setItem(keys.price, state.price);
-      storage.setItem(keys.perPack, state.perPack);
-      showHome();
+    function updateDashboard(){
+      const cost = state.today * (state.price/state.perPack);
+      $('#costToday').textContent = cost.toFixed(2);
+      const resist = Math.max(0, state.base - state.today);
+      $('#resist').textContent = resist;
+      const health = state.today <= state.base * 0.5 ? '优' : state.today <= state.base * 0.8 ? '良' : '警告';
+      $('#healthWarn').textContent = health;
+      $('#healthWarn').style.color = health==='优'? 'var(--primary)' : health==='良'? 'var(--warn)' : 'var(--danger)';
+      // 本周趋势
+      const week = [];
+      for(let i=6;i>=0;i--){
+        const d = new Date(); d.setDate(d.getDate()-i);
+        const key = d.toISOString().slice(0,10);
+        const r = state.records.find(x=>x.date===key);
+        week.push(r?r.today:0);
+      }
+      const max = Math.max(1,...week);
+      const trend = $('#weekTrend'); trend.innerHTML='';
+      week.forEach(v=>{
+        const h = Math.round(v/max*40);
+        const bar = document.createElement('div'); bar.className='bar'; bar.style.height=h+'px'; trend.appendChild(bar);
+      });
+      // 时间线
+      const tl = $('#timeline'); tl.innerHTML='';
+      state.records.slice(-5).reverse().forEach(r=>{
+        const div = document.createElement('div'); div.className='timeline-item';
+        div.innerHTML = `<div>${r.date} <span class="emotion">${emotionEmoji(r.emotion)||''}</span></div><div>今日${r.today}支 ${r.note?`备注：${r.note}`:''}</div>`;
+        tl.appendChild(div);
+      });
     }
-    function addOne(){
+    function emotionEmoji(emo){
+      const map = {焦虑:'😰',无聊:'😑',习惯:'🔄',压力:'😣',低落:'😞',思考:'🤔',庆祝:'🎉',社交:'🗣️'};
+      return map[emo]||'';
+    }
+    function showRecord(){
+      $('#recordPopup').classList.add('show');
+    }
+    function closeRecord(){
+      $('#recordPopup').classList.remove('show');
+    }
+    let selectedEmo = '';
+    document.querySelectorAll('.emotion-item').forEach(el=>{
+      el.onclick = () => {
+        document.querySelectorAll('.emotion-item').forEach(e=>e.classList.remove('selected'));
+        el.classList.add('selected'); selectedEmo = el.dataset.emo;
+      };
+    });
+    function saveRecord(){
       state.today += 1;
-      $('#todayCount').textContent = state.today;
-      saveToday();
-      calc();
-    }
-    function archiveToday(){
+      const note = $('#note').value;
       const key = new Date().toISOString().slice(0,10);
-      const idx = state.records.findIndex(r=>r.date===key);
-      const item = {date:key, today:state.today, less:Math.max(0,state.base-state.today), save:Math.max(0,state.base-state.today)/state.perPack*state.price};
-      if(idx>=0) state.records[idx]=item; else state.records.push(item);
+      state.records.push({date:key, today:state.today, emotion:selectedEmo, note, lat:0, lon:0});
+      state.emotions[selectedEmo] = (state.emotions[selectedEmo]||0)+1;
       saveToday();
+      updateDashboard();
+      closeRecord();
+      $('#note').value='';
+    }
+    function startVoice(){
+      navigator.mediaDevices.getUserMedia({audio:true}).then(stream=>{
+        const rec = new MediaRecorder(stream); const chunks=[];
+        rec.ondataavailable = e=>chunks.push(e.data);
+        rec.onstop = () => {
+          const blob = new Blob(chunks,{type:'audio/webm'});
+          const reader = new FileReader();
+          reader.onload = () => {
+            state.media.push({type:'audio', data:reader.result});
+            $('#mediaPreview').innerHTML += `<div>🎤 语音已录</div>`;
+          };
+          reader.readAsDataURL(blob);
+        };
+        rec.start(); setTimeout(()=>rec.stop(),3000);
+      }).catch(()=>alert('无麦克风权限'));
+    }
+    function takePhoto(){
+      const inp = document.createElement('input'); inp.type='file'; inp.accept='image/*'; inp.capture='environment';
+      inp.onchange = e => {
+        const file = e.target.files[0]; if(!file)return;
+        const img = new Image(); const url = URL.createObjectURL(file);
+        img.onload = () => {
+          const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d');
+          canvas.width=200; canvas.height=200; ctx.drawImage(img,0,0,200,200);
+          const data = canvas.toDataURL('image/jpeg',0.7);
+          state.media.push({type:'photo', data});
+          $('#mediaPreview').innerHTML += `<img src="${data}">`;
+        };
+        img.src = url;
+      };
+      inp.click();
+    }
+    function drawHeatMap(){
+      const heat = $('#heatMap'); heat.innerHTML='';
+      for(let i=0;i<24;i++){
+        const h = Math.round(Math.random()*40); // 伪数据
+        const bar = document.createElement('div'); bar.className='bar'; bar.style.height=h+'px'; heat.appendChild(bar);
+      }
+    }
+    function drawEmoPie(){
+      const canvas = $('#emoPie'); const ctx = canvas.getContext('2d');
+      const data = Object.entries(state.emotions);
+      if(!data.length){ctx.clearRect(0,0,240,240); ctx.fillStyle='#999'; ctx.fillText('暂无数据',100,120); return;}
+      const total = data.reduce((a,[_,v])=>a+v,0);
+      const colors = ['#34C759','#5AC8FA','#FF9500','#FF3B30','#5856D6','#AF52DE','#FFCC00','#A2845E'];
+      let ang = -Math.PI/2;
+      const center = 120, radius = 80;
+      data.forEach(([emo,v],i)=>{
+        const slice = v/total*2*Math.PI;
+        ctx.beginPath(); ctx.moveTo(center,center); ctx.arc(center,center,radius,ang,ang+slice); ctx.closePath();
+        ctx.fillStyle = colors[i%colors.length]; ctx.fill();
+        ang += slice;
+      });
+    }
+    function drawParticleMap(){
+      const canvas = $('#canvasMap'); const ctx = canvas.getContext('2d');
+      canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight;
+      const particles = [];
+      for(let i=0;i<state.today;i++){
+        particles.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, r:Math.random()*20+5, alpha:0.3});
+      }
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      particles.forEach(p=>{
+        ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fillStyle=`rgba(0,0,0,${p.alpha})`; ctx.fill();
+      });
     }
     // 初始化
     loadState();
-    // 每日归档
-    const todayKey = new Date().toISOString().slice(0,10);
-    const last = state.records.find(r=>r.date===todayKey);
-    if(last && last.today !== state.today) archiveToday();
-    if(!last) archiveToday();
-    $('#todayCount').textContent = state.today;
-    $('#base').textContent = state.base;
-    // 启动屏 1.2s 后进入
-    setTimeout(showHome,1200);
+    setTimeout(showDashboard,1200);
   </script>
 </body>
 </html>
