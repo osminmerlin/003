@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>烟迹终结者</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="烟迹终结者">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Noto Sans SC', sans-serif; }
+        .gradient-text {
+            background: linear-gradient(135deg, #10B981, #0EA5E9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .card-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .progress-ring {
+            transform: rotate(-90deg);
+        }
+        .progress-ring-circle {
+            transition: stroke-dashoffset 0.35s;
+            transform-origin: 50% 50%;
+        }
+    </style>
+</head>
+<body class="bg-white text-gray-700 min-h-screen pb-20">
+    <!-- 头部 -->
+    <header class="bg-white px-4 py-6 border-b border-gray-100">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-2xl font-bold gradient-text">烟迹终结者</h1>
+                <p class="text-sm text-gray-500 mt-1">让健康重新开始</p>
+            </div>
+            <div class="text-right">
+                <div class="text-sm text-gray-500">戒烟天数</div>
+                <div id="quitDays" class="text-3xl font-bold text-emerald-600">0</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要内容区域 -->
+    <main class="px-4 py-6 space-y-6">
+        <!-- 进度仪表板 -->
+        <section class="bg-white rounded-2xl card-shadow p-6">
+            <h2 class="text-lg font-semibold mb-4 text-gray-800">今日进度</h2>
+            <div class="grid grid-cols-2 gap-4">
+                <!-- 进度环 -->
+                <div class="flex flex-col items-center">
+                    <div class="relative w-24 h-24">
+                        <svg class="progress-ring w-24 h-24" viewBox="0 0 120 120">
+                            <circle cx="60" cy="60" r="50" stroke="#E5E7EB" stroke-width="8" fill="transparent"/>
+                            <circle id="progressCircle" cx="60" cy="60" r="50" stroke="#10B981" stroke-width="8" 
+                                    fill="transparent" stroke-dasharray="314" stroke-dashoffset="314" class="progress-ring-circle"/>
+                        </svg>
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <span id="progressPercent" class="text-lg font-bold text-emerald-600">0%</span>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-600 mt-2">完成度</p>
+                </div>
+                
+                <!-- 统计数据 -->
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-600">今日吸烟</span>
+                        <span id="todaySmokes" class="text-lg font-semibold text-orange-500">0</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-600">节省金额</span>
+                        <span id="savedMoney" class="text-lg font-semibold text-green-500">¥0</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-600">健康指数</span>
+                        <span id="healthIndex" class="text-lg font-semibold text-blue-500">0%</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 快速记录 -->
+        <section class="bg-white rounded-2xl card-shadow p-6">
+            <h2 class="text-lg font-semibold mb-4 text-gray-800">快速记录</h2>
+            <button id="recordSmokeBtn" class="w-full bg-gradient-to-r from-orange-400 to-orange-500 text-white py-4 rounded-xl font-semibold text-lg shadow-lg active:scale-95 transition-transform">
+                记录吸烟事件
+            </button>
+            
+            <!-- 触发因素快速选择 -->
+            <div class="mt-4">
+                <p class="text-sm text-gray-600 mb-3">常见触发因素</p>
+                <div class="grid grid-cols-2 gap-2">
+                    <button class="trigger-btn bg-gray-50 text-gray-700 py-2 px-3 rounded-lg text-sm border border-gray-200 active:bg-gray-100" data-trigger="压力">
+                        😰 压力
+                    </button>
+                    <button class="trigger-btn bg-gray-50 text-gray-700 py-2 px-3 rounded-lg text-sm border border-gray-200 active:bg-gray-100" data-trigger="社交">
+                        👥 社交
+                    </button>
+                    <button class="trigger-btn bg-gray-50 text-gray-700 py-2 px-3 rounded-lg text-sm border border-gray-200 active:bg-gray-100" data-trigger="习惯">
+                        🔄 习惯
+                    </button>
+                    <button class="trigger-btn bg-gray-50 text-gray-700 py-2 px-3 rounded-lg text-sm border border-gray-200 active:bg-gray-100" data-trigger="情绪">
+                        😔 情绪
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 成就展示 -->
+        <section class="bg-white rounded-2xl card-shadow p-6">
+            <h2 class="text-lg font-semibold mb-4 text-gray-800">今日成就</h2>
+            <div id="achievementsList" class="space-y-3">
+                <!-- 成就项将通过JavaScript动态添加 -->
+            </div>
+        </section>
+
+        <!-- 健康改善时间线 -->
+        <section class="bg-white rounded-2xl card-shadow p-6">
+            <h2 class="text-lg font-semibold mb-4 text-gray-800">健康改善</h2>
+            <div class="space-y-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                        <span class="text-green-600 text-sm">🫁</span>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm font-medium text-gray-800">肺部功能</p>
+                        <p class="text-xs text-gray-500">戒烟后开始改善</p>
+                    </div>
+                    <div class="text-sm font-semibold text-green-600" id="lungProgress">+0%</div>
+                </div>
+                
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                        <span class="text-blue-600 text-sm">❤️</span>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm font-medium text-gray-800">心血管</p>
+                        <p class="text-xs text-gray-500">血液循环改善</p>
+                    </div>
+                    <div class="text-sm font-semibold text-blue-600" id="heartProgress">+0%</div>
+                </div>
+                
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                        <span class="text-purple-600 text-sm">🧠</span>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm font-medium text-gray-800">精神状态</p>
+                        <p class="text-xs text-gray-500">注意力提升</p>
+                    </div>
+                    <div class="text-sm font-semibold text-purple-600" id="mentalProgress">+0%</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 激励语句 -->
+        <section class="bg-gradient-to-r from-emerald-50 to-blue-50 rounded-2xl p-6 text-center">
+            <div class="text-2xl mb-2">💪</div>
+            <p id="motivationText" class="text-sm text-gray-700 font-medium">
+                每一次拒绝都是向健康迈进的一步！
+            </p>
+        </section>
+    </main>
+
+    <!-- 记录弹窗 -->
+    <div id="recordModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-2xl p-6 mx-4 w-full max-w-sm">
+            <h3 class="text-lg font-semibold mb-4 text-gray-800">记录吸烟事件</h3>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">触发因素</label>
+                    <select id="triggerSelect" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+                        <option value="">请选择</option>
+                        <option value="压力">压力</option>
+                        <option value="社交">社交</option>
+                        <option value="习惯">习惯</option>
+                        <option value="情绪">情绪</option>
+                        <option value="其他">其他</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">心情评分 (1-10)</label>
+                    <input type="range" id="moodSlider" min="1" max="10" value="5" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                    <div class="flex justify-between text-xs text-gray-500 mt-1">
+                        <span>😔</span>
+                        <span id="moodValue">5</span>
+                        <span>😊</span>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">备注 (可选)</label>
+                    <textarea id="noteInput" rows="3" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" placeholder="记录当时的具体情况..."></textarea>
+                </div>
+            </div>
+            
+            <div class="flex space-x-3 mt-6">
+                <button id="cancelRecord" class="flex-1 py-3 px-4 bg-gray-100 text-gray-700 rounded-lg font-medium">取消</button>
+                <button id="saveRecord" class="flex-1 py-3 px-4 bg-emerald-500 text-white rounded-lg font-medium">保存记录</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部导航 -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-2 z-40">
+        <div class="flex justify-around">
+            <a href="index.html" class="flex flex-col items-center py-2 px-3 text-emerald-600">
+                <div class="text-xl mb-1">🏠</div>
+                <span class="text-xs font-medium">首页</span>
+            </a>
+            <a href="stats.html" class="flex flex-col items-center py-2 px-3 text-gray-400">
+                <div class="text-xl mb-1">📊</div>
+                <span class="text-xs">统计</span>
+            </a>
+            <a href="settings.html" class="flex flex-col items-center py-2 px-3 text-gray-400">
+                <div class="text-xl mb-1">⚙️</div>
+                <span class="text-xs">设置</span>
+            </a>
+        </div>
+    </nav>
+
+    <script src="main.js"></script>
+</body>
+</html>
