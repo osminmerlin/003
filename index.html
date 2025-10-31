@@ -1,206 +1,1007 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="utf-8">
-  <title>烟迹终结者</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="theme-color" content="#34C759">
-  <link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==">
-  <style>
-    :root{
-      --primary:#34C759;
-      --bg:#F2F7F4;
-      --card:#fff;
-      --text:#1C1C1E;
-      --sub:#8E8E93;
-    }
-    @media (prefers-color-scheme: dark){
-      :root{
-        --bg:#000;
-        --card:#1C1C1E;
-        --text:#fff;
-        --sub:#8E8E93;
-      }
-    }
-    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif}
-    body{background:var(--bg);color:var(--text)}
-    .screen{min-height:100vh;display:flex;flex-direction:column;padding:32px 24px 40px}
-    h1{font-size:28px;font-weight:600;margin-bottom:24px}
-    .card{width:100%;background:var(--card);border-radius:24px;padding:24px;box-shadow:0 8px 24px rgba(0,0,0,.06);margin-bottom:24px}
-    .ring{position:relative;width:180px;height:180px;margin:0 auto 24px}
-    .ring svg{transform:rotate(-90deg)}
-    .ring-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:48px;font-weight:600}
-    .btn{width:100%;height:56px;border-radius:16px;border:0;background:var(--primary);color:#fff;font-size:18px;font-weight:600;box-shadow:0 4px 12px rgba(52,199,89,.3)}
-    .btn:active{opacity:.8}
-    .flex{display:flex;justify-content:space-between;align-items:center}
-    .save-tag{font-size:14px;color:var(--sub)}
-    .chart-box{height:120px;position:relative}
-    .poster-btn{margin-top:12px;background:var(--sub);color:#fff}
-    canvas{width:100%;height:100%}
-    .hidden{display:none}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="烟迹终结者">
+    <meta name="description" content="记录习惯，追踪健康，发现生活的小确幸">
+    <meta name="theme-color" content="#34C759">
+    
+    <title>烟迹终结者</title>
+    
+    <!-- PWA配置 -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="icon-192.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary-green: #34C759;
+            --secondary-orange: #FF9500;
+            --background: #F2F2F7;
+            --card-bg: #FFFFFF;
+            --text-primary: #000000;
+            --text-secondary: #8E8E93;
+            --border-color: #E5E5EA;
+            --success-color: #30D158;
+            --warning-color: #FF9500;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background-color: var(--background);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .container {
+            max-width: 414px;
+            margin: 0 auto;
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+        
+        /* 头部样式 */
+        .header {
+            background: var(--card-bg);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--primary-green);
+            margin-bottom: 5px;
+        }
+        
+        .header .subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        /* 页面内容 */
+        .page {
+            display: none;
+            padding: 20px;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* 卡片样式 */
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid var(--border-color);
+        }
+        
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+        
+        /* 快速记录按钮 */
+        .quick-record {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, var(--primary-green), #30D158);
+            color: white;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 16px rgba(52, 199, 89, 0.3);
+        }
+        
+        .record-btn {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+            font-size: 24px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .record-btn:active {
+            transform: scale(0.95);
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .today-count {
+            font-size: 48px;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+        
+        .today-label {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        /* 统计数字 */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .stat-item {
+            background: var(--card-bg);
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--primary-green);
+            margin-bottom: 4px;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        /* 图表容器 */
+        .chart-container {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            height: 250px;
+            position: relative;
+        }
+        
+        /* 节省对比 */
+        .saving-comparison {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 12px;
+            margin-top: 16px;
+        }
+        
+        .comparison-item {
+            background: linear-gradient(135deg, var(--secondary-orange), #FFB84D);
+            color: white;
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 14px;
+        }
+        
+        .comparison-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        
+        /* 健康恢复进度 */
+        .health-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+            padding: 12px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .health-icon {
+            font-size: 24px;
+            margin-right: 12px;
+            width: 40px;
+            text-align: center;
+        }
+        
+        .health-info {
+            flex: 1;
+        }
+        
+        .health-name {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .health-progress {
+            background: var(--border-color);
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .health-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-green), #30D158);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        
+        /* 设置表单 */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 16px;
+            background: var(--card-bg);
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-green);
+        }
+        
+        /* 底部导航 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 414px;
+            background: var(--card-bg);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+        
+        .nav-item {
+            flex: 1;
+            text-align: center;
+            padding: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            background: none;
+            color: var(--text-secondary);
+        }
+        
+        .nav-item.active {
+            color: var(--primary-green);
+        }
+        
+        .nav-icon {
+            font-size: 24px;
+            display: block;
+            margin-bottom: 4px;
+        }
+        
+        .nav-label {
+            font-size: 12px;
+        }
+        
+        /* 按钮样式 */
+        .btn {
+            background: var(--primary-green);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .btn:active {
+            transform: scale(0.98);
+        }
+        
+        .btn-secondary {
+            background: var(--text-secondary);
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 375px) {
+            .container {
+                padding-bottom: 70px;
+            }
+            
+            .header h1 {
+                font-size: 20px;
+            }
+            
+            .today-count {
+                font-size: 36px;
+            }
+        }
+        
+        /* 深色模式支持 */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --background: #000000;
+                --card-bg: #1C1C1E;
+                --text-primary: #FFFFFF;
+                --text-secondary: #8E8E93;
+                --border-color: #38383A;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div id="app" class="screen">
-    <h1>掌控今日</h1>
-    <div class="card">
-      <div class="ring">
-        <svg width="180" height="180">
-          <circle cx="90" cy="90" r="80" stroke="#E5E5EA" stroke-width="12" fill="none"/>
-          <circle id="progress" cx="90" cy="90" r="80" stroke="#34C759" stroke-width="12" fill="none" stroke-dasharray="502.4" stroke-dashoffset="502.4" stroke-linecap="round"/>
-        </svg>
-        <div class="ring-num"><span id="today">0</span></div>
-      </div>
-      <button class="btn" onclick="addOne()">记录一支</button>
-      <div class="flex" style="margin-top:16px">
-        <span class="save-tag">过去均值 <b id="avg">20</b></span>
-        <span class="save-tag">节省 ¥<b id="save">0.00</b></span>
-      </div>
+    <div class="container">
+        <!-- 头部 -->
+        <header class="header">
+            <h1>烟迹终结者</h1>
+            <div class="subtitle">记录习惯，发现生活的小确幸</div>
+        </header>
+        
+        <!-- 数据页面 -->
+        <div class="page active" id="data-page">
+            <div class="quick-record">
+                <button class="record-btn" onclick="recordSmoke()">🚬</button>
+                <div class="today-count" id="today-count">0</div>
+                <div class="today-label">今日记录</div>
+            </div>
+            
+            <div class="stat-grid">
+                <div class="stat-item">
+                    <div class="stat-value" id="week-avg">0</div>
+                    <div class="stat-label">本周平均</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="month-total">0</div>
+                    <div class="stat-label">本月总计</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">📊 趋势分析</div>
+                <div class="chart-container">
+                    <canvas id="trend-chart"></canvas>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">📈 对比分析</div>
+                <div id="comparison-text" style="color: var(--text-secondary); text-align: center; padding: 20px;">
+                    继续记录，发现更多有趣的数据
+                </div>
+            </div>
+        </div>
+        
+        <!-- 节省页面 -->
+        <div class="page" id="saving-page">
+            <div class="card">
+                <div class="card-title">💰 累计节省</div>
+                <div style="text-align: center; padding: 20px;">
+                    <div style="font-size: 36px; font-weight: 700; color: var(--primary-green); margin-bottom: 10px;">
+                        ¥<span id="total-saving">0</span>
+                    </div>
+                    <div style="color: var(--text-secondary);">相比预期支出</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">🎯 这些钱原来可以</div>
+                <div class="saving-comparison" id="saving-comparison">
+                    <div class="comparison-item">
+                        <div class="comparison-icon">☕</div>
+                        <div>0杯咖啡</div>
+                    </div>
+                    <div class="comparison-item">
+                        <div class="comparison-icon">🍕</div>
+                        <div>0顿披萨</div>
+                    </div>
+                    <div class="comparison-item">
+                        <div class="comparison-icon">🎬</div>
+                        <div>0场电影</div>
+                    </div>
+                    <div class="comparison-item">
+                        <div class="comparison-icon">🎮</div>
+                        <div>0个游戏</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">📅 时间维度</div>
+                <div id="time-dimension" style="color: var(--text-secondary); text-align: center; padding: 20px;">
+                    设置个人信息，查看详细节省数据
+                </div>
+            </div>
+        </div>
+        
+        <!-- 恢复页面 -->
+        <div class="page" id="recovery-page">
+            <div class="card">
+                <div class="card-title">❤️ 身体恢复进度</div>
+                
+                <div class="health-item">
+                    <div class="health-icon">🫁</div>
+                    <div class="health-info">
+                        <div class="health-name">肺部功能</div>
+                        <div class="health-progress">
+                            <div class="health-progress-bar" style="width: 0%" data-target="lung"></div>
+                        </div>
+                    </div>
+                    <div class="health-percent">0%</div>
+                </div>
+                
+                <div class="health-item">
+                    <div class="health-icon">❤️</div>
+                    <div class="health-info">
+                        <div class="health-name">心血管</div>
+                        <div class="health-progress">
+                            <div class="health-progress-bar" style="width: 0%" data-target="heart"></div>
+                        </div>
+                    </div>
+                    <div class="health-percent">0%</div>
+                </div>
+                
+                <div class="health-item">
+                    <div class="health-icon">👅</div>
+                    <div class="health-info">
+                        <div class="health-name">味觉嗅觉</div>
+                        <div class="health-progress">
+                            <div class="health-progress-bar" style="width: 0%" data-target="taste"></div>
+                        </div>
+                    </div>
+                    <div class="health-percent">0%</div>
+                </div>
+                
+                <div class="health-item">
+                    <div class="health-icon">⚡</div>
+                    <div class="health-info">
+                        <div class="health-name">精力充沛</div>
+                        <div class="health-progress">
+                            <div class="health-progress-bar" style="width: 0%" data-target="energy"></div>
+                        </div>
+                    </div>
+                    <div class="health-percent">0%</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">⏰ 恢复时间轴</div>
+                <div id="recovery-timeline" style="color: var(--text-secondary); font-size: 14px; line-height: 1.8;">
+                    <div>🕐 1小时后：心率开始下降</div>
+                    <div>🕕 8小时后：血液含氧量改善</div>
+                    <div>🕐 24小时后：肺部开始清洁</div>
+                    <div>📅 1周后：味觉嗅觉提升</div>
+                    <div>📅 1个月后：皮肤状态改善</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 设置页面 -->
+        <div class="page" id="settings-page">
+            <div class="card">
+                <div class="card-title">⚙️ 个人信息</div>
+                
+                <div class="form-group">
+                    <label class="form-label">习惯时长（年）</label>
+                    <input type="number" class="form-input" id="habit-years" placeholder="例如：5" min="0" max="50">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">每日数量（支）</label>
+                    <input type="number" class="form-input" id="daily-amount" placeholder="例如：15" min="1" max="100">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">每盒价格（元）</label>
+                    <input type="number" class="form-input" id="pack-price" placeholder="例如：25" min="1" max="200">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">每盒数量（支）</label>
+                    <input type="number" class="form-input" id="pack-size" placeholder="例如：20" min="10" max="30" value="20">
+                </div>
+                
+                <button class="btn" onclick="saveSettings()">保存设置</button>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">📊 数据管理</div>
+                <button class="btn btn-secondary" onclick="exportData()" style="margin-bottom: 12px;">导出数据</button>
+                <button class="btn btn-secondary" onclick="clearData()">清除数据</button>
+            </div>
+            
+            <div class="card" style="text-align: center; color: var(--text-secondary); font-size: 12px;">
+                <p>烟迹终结者 v1.0</p>
+                <p>记录习惯，发现生活的小确幸</p>
+            </div>
+        </div>
     </div>
-    <div class="card">
-      <div class="flex" style="margin-bottom:12px">
-        <div style="font-size:16px;font-weight:600">身体恢复时间轴</div>
-        <div id="recoverText" style="font-size:14px;color:var(--sub)">8h</div>
-      </div>
-      <div class="chart-box"><canvas id="recoverCanvas"></canvas></div>
-    </div>
-    <div class="card">
-      <div class="flex" style="margin-bottom:12px">
-        <div style="font-size:16px;font-weight:600">7日趋势</div>
-        <div style="font-size:14px;color:var(--sub)" onclick="toggleChart()">左滑看30日</div>
-      </div>
-      <div class="chart-box"><canvas id="trendCanvas"></canvas></div>
-    </div>
-    <button class="btn poster-btn" onclick="genPoster()">生成月度海报</button>
-  </div>
-
-  <script>
-    // 工具
-    const $ = q => document.querySelector(q);
-    const idb = window.indexedDB.open('smokeDB',1);
-    let db;
-    idb.onsuccess = () => { db = idb.result; loadAll(); };
-    idb.onupgradeneeded = () => {
-      db = idb.result;
-      if(!db.objectStoreNames.contains('records')) db.createObjectStore('records',{keyPath:'id',autoIncrement:true});
-    };
-    function save(rec){ const tx = db.transaction('records','readwrite'); tx.objectStore('records').put(rec); }
-    function loadAll(){
-      const tx = db.transaction('records','readonly');
-      const store = tx.objectStore('records');
-      const req = store.getAll();
-      req.onsuccess = () => { window.allRecords = req.result; updateUI(); };
-    }
-
-    // 状态
-    const avg = 20; // 过去均值
-    let today = 0;
-    let currentMonth = new Date().getMonth();
-    let currentYear = new Date().getFullYear();
-
-    function addOne(){
-      today += 1;
-      save({date:new Date().toISOString().slice(0,10), count:today});
-      updateUI();
-    }
-    function updateUI(){
-      $('#today').textContent = today;
-      const save = Math.max(0, avg - today) * (25/20); // 假设每盒25元20支
-      $('#save').textContent = save.toFixed(2);
-      const pct = avg ? (today/avg)*100 : 0;
-      const offset = 502.4 - (502.4 * pct / 100);
-      $('#progress').style.strokeDashoffset = offset;
-      drawRecover();
-      drawTrend();
-    }
-    function drawRecover(){
-      const canvas = $('#recoverCanvas');
-      const ctx = canvas.getContext('2d');
-      canvas.width = canvas.offsetWidth * devicePixelRatio;
-      canvas.height = canvas.offsetHeight * devicePixelRatio;
-      ctx.scale(devicePixelRatio, devicePixelRatio);
-      const w = canvas.offsetWidth, h = canvas.offsetHeight;
-      ctx.clearRect(0,0,w,h);
-      const milestones = [8,48,72,336,720,2160]; // h
-      const labels = ['8h','48h','72h','2周','1月','3月'];
-      const barW = w / milestones.length - 8;
-      const now = today <= avg ? Math.min(5, Math.floor((avg-today)/avg*6)) : -1;
-      ctx.fillStyle = '#34C759';
-      for(let i=0;i<=now;i++){
-        ctx.fillRect(i*(barW+8), h-20, barW, 16);
-        ctx.fillStyle = '#8E8E93';
-        ctx.fillText(labels[i], i*(barW+8), h-4);
-      }
-      $('#recoverText').textContent = now>=0?labels[now]:'—';
-    }
-    function drawTrend(){
-      const canvas = $('#trendCanvas');
-      const ctx = canvas.getContext('2d');
-      canvas.width = canvas.offsetWidth * devicePixelRatio;
-      canvas.height = canvas.offsetHeight * devicePixelRatio;
-      ctx.scale(devicePixelRatio, devicePixelRatio);
-      const w = canvas.offsetWidth, h = canvas.offsetHeight;
-      ctx.clearRect(0,0,w,h);
-      const days = window.allRecords ? window.allRecords.slice(-7) : [];
-      const max = Math.max(avg, ...days.map(d=>d.count));
-      const pad = 16, step = (w - 2*pad) / Math.max(1, days.length-1);
-      ctx.strokeStyle = '#34C759'; ctx.lineWidth = 3; ctx.lineCap = 'round';
-      ctx.beginPath();
-      days.forEach((d,i)=>{
-        const x = pad + i*step;
-        const y = h - pad - (d.count/max)*(h-2*pad);
-        if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
-      });
-      ctx.stroke();
-      // 均线
-      ctx.strokeStyle = '#8E8E93'; ctx.setLineDash([4,4]);
-      const yAvg = h - pad - (avg/max)*(h-2*pad);
-      ctx.beginPath(); ctx.moveTo(pad,yAvg); ctx.lineTo(w-pad,yAvg); ctx.stroke();
-      ctx.setLineDash([]);
-    }
-    function toggleChart(){
-      // 简易切换提示，后续可扩展30日
-      alert('30日视图开发中，先继续掌控今日吧！');
-    }
-    function genPoster(){
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-      const dpr = devicePixelRatio;
-      canvas.width = 1080 * dpr; canvas.height = 1080 * dpr;
-      ctx.scale(dpr,dpr);
-      // 背景
-      ctx.fillStyle = '#F2F7F4'; ctx.fillRect(0,0,1080,1080);
-      // 标题
-      ctx.fillStyle = '#1C1C1E'; ctx.font = 'bold 72px -apple-system'; ctx.textAlign = 'center';
-      ctx.fillText('烟迹终结者',540,200);
-      // 本月节省
-      const monthSave = Math.max(0, avg - today) * (25/20); // 伪
-      ctx.font = '48px -apple-system'; ctx.fillStyle = '#34C759';
-      ctx.fillText(`本月节省 ¥${monthSave.toFixed(2)}`,540,400);
-      // 身体恢复
-      ctx.fillStyle = '#8E8E93'; ctx.font = '36px -apple-system';
-      ctx.fillText('身体恢复进度 72%',540,600);
-      // 二维码占位
-      ctx.fillStyle = '#000'; ctx.fillRect(440,800,200,200);
-      ctx.fillStyle = '#fff'; ctx.fillText('扫码查看',540,940);
-      // 导出
-      canvas.toBlob(blob=>{
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a'); a.href=url; a.download='月度海报.jpg'; a.click();
-      },'image/jpeg',0.9);
-    }
-
-    // PWA & SW
-    if('serviceWorker' in navigator){
-      const sw = `self.addEventListener('install',e=>e.waitUntil(caches.open('v1').then(c=>c.addAll(['/']))))`;
-      const blob = new Blob([sw],{type:'application/javascript'});
-      const url = URL.createObjectURL(blob);
-      navigator.serviceWorker.register(url);
-    }
-    // 启动
-    updateUI();
-  </script>
+    
+    <!-- 底部导航 -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" onclick="showPage('data-page')">
+            <span class="nav-icon">📊</span>
+            <span class="nav-label">数据</span>
+        </button>
+        <button class="nav-item" onclick="showPage('saving-page')">
+            <span class="nav-icon">💰</span>
+            <span class="nav-label">节省</span>
+        </button>
+        <button class="nav-item" onclick="showPage('recovery-page')">
+            <span class="nav-icon">❤️</span>
+            <span class="nav-label">恢复</span>
+        </button>
+        <button class="nav-item" onclick="showPage('settings-page')">
+            <span class="nav-icon">⚙️</span>
+            <span class="nav-label">设置</span>
+        </button>
+    </nav>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // 数据存储
+        let appData = {
+            records: [],
+            settings: {
+                habitYears: 0,
+                dailyAmount: 0,
+                packPrice: 0,
+                packSize: 20
+            }
+        };
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            loadData();
+            updateUI();
+            initChart();
+            updateHealthProgress();
+        });
+        
+        // 页面切换
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+            
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.closest('.nav-item').classList.add('active');
+            
+            // 更新对应页面数据
+            if (pageId === 'saving-page') {
+                updateSavingPage();
+            } else if (pageId === 'recovery-page') {
+                updateHealthProgress();
+            }
+        }
+        
+        // 记录功能
+        function recordSmoke() {
+            const now = new Date();
+            const today = now.toDateString();
+            
+            // 检查今天是否已有记录
+            let todayRecord = appData.records.find(r => r.date === today);
+            if (todayRecord) {
+                todayRecord.count++;
+            } else {
+                appData.records.push({
+                    date: today,
+                    count: 1,
+                    timestamp: now.getTime()
+                });
+            }
+            
+            saveData();
+            updateUI();
+            updateChart();
+            updateHealthProgress();
+            
+            // 触觉反馈
+            if (navigator.vibrate) {
+                navigator.vibrate(50);
+            }
+        }
+        
+        // 更新UI
+        function updateUI() {
+            const today = new Date().toDateString();
+            const todayRecord = appData.records.find(r => r.date === today);
+            const todayCount = todayRecord ? todayRecord.count : 0;
+            
+            document.getElementById('today-count').textContent = todayCount;
+            
+            // 计算本周平均
+            const weekData = getWeekData();
+            const weekAvg = weekData.length > 0 ? Math.round(weekData.reduce((sum, d) => sum + d.count, 0) / weekData.length) : 0;
+            document.getElementById('week-avg').textContent = weekAvg;
+            
+            // 计算本月总计
+            const monthData = getMonthData();
+            const monthTotal = monthData.reduce((sum, d) => sum + d.count, 0);
+            document.getElementById('month-total').textContent = monthTotal;
+            
+            // 对比分析
+            updateComparison(todayCount, weekAvg);
+        }
+        
+        // 获取本周数据
+        function getWeekData() {
+            const now = new Date();
+            const weekStart = new Date(now.setDate(now.getDate() - now.getDay()));
+            weekStart.setHours(0, 0, 0, 0);
+            
+            return appData.records.filter(r => {
+                const recordDate = new Date(r.date);
+                return recordDate >= weekStart;
+            });
+        }
+        
+        // 获取本月数据
+        function getMonthData() {
+            const now = new Date();
+            const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+            
+            return appData.records.filter(r => {
+                const recordDate = new Date(r.date);
+                return recordDate >= monthStart;
+            });
+        }
+        
+        // 更新对比分析
+        function updateComparison(today, weekAvg) {
+            const comparisonText = document.getElementById('comparison-text');
+            if (weekAvg === 0) {
+                comparisonText.textContent = '继续记录，发现更多有趣的数据';
+                return;
+            }
+            
+            const diff = today - weekAvg;
+            if (diff < 0) {
+                comparisonText.innerHTML = `
+                    <div style="color: var(--primary-green);">
+                        📉 比本周平均少 ${Math.abs(diff)} 支<br>
+                        <small style="color: var(--text-secondary);">继续保持这个节奏</small>
+                    </div>
+                `;
+            } else if (diff > 0) {
+                comparisonText.innerHTML = `
+                    <div style="color: var(--warning-color);">
+                        📈 比本周平均多 ${diff} 支<br>
+                        <small style="color: var(--text-secondary);">可以适当调整节奏</small>
+                    </div>
+                `;
+            } else {
+                comparisonText.innerHTML = `
+                    <div style="color: var(--text-secondary);">
+                        🎯 与本周平均持平<br>
+                        <small>保持稳定的状态</small>
+                    </div>
+                `;
+            }
+        }
+        
+        // 初始化图表
+        let trendChart;
+        function initChart() {
+            const ctx = document.getElementById('trend-chart').getContext('2d');
+            trendChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: '每日记录',
+                        data: [],
+                        borderColor: '#34C759',
+                        backgroundColor: 'rgba(52, 199, 89, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#34C759',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+            
+            updateChart();
+        }
+        
+        // 更新图表
+        function updateChart() {
+            const weekData = getWeekData();
+            const sortedData = weekData.sort((a, b) => new Date(a.date) - new Date(b.date));
+            
+            const labels = sortedData.map(d => {
+                const date = new Date(d.date);
+                return `${date.getMonth() + 1}/${date.getDate()}`;
+            });
+            
+            const data = sortedData.map(d => d.count);
+            
+            trendChart.data.labels = labels;
+            trendChart.data.datasets[0].data = data;
+            trendChart.update();
+        }
+        
+        // 更新节省页面
+        function updateSavingPage() {
+            if (appData.settings.dailyAmount === 0 || appData.settings.packPrice === 0) {
+                document.getElementById('total-saving').textContent = '0';
+                document.getElementById('saving-comparison').innerHTML = `
+                    <div class="comparison-item">
+                        <div class="comparison-icon">⚙️</div>
+                        <div>请先设置信息</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            const today = new Date().toDateString();
+            const todayRecord = appData.records.find(r => r.date === today);
+            const todayCount = todayRecord ? todayRecord.count : 0;
+            
+            const expected = appData.settings.dailyAmount;
+            const savedToday = expected - todayCount;
+            const pricePerCigarette = appData.settings.packPrice / appData.settings.packSize;
+            const moneySavedToday = Math.max(0, savedToday * pricePerCigarette);
+            
+            // 计算总节省
+            let totalSaved = 0;
+            appData.records.forEach(record => {
+                const saved = expected - record.count;
+                if (saved > 0) {
+                    totalSaved += saved * pricePerCigarette;
+                }
+            });
+            
+            document.getElementById('total-saving').textContent = Math.round(totalSaved);
+            
+            // 更新对比项目
+            const coffeePrice = 25;
+            const pizzaPrice = 80;
+            const moviePrice = 50;
+            const gamePrice = 300;
+            const phonePrice = 100;
+            const gymPrice = 200;
+            
+            const coffeeCount = Math.floor(totalSaved / coffeePrice);
+            const pizzaCount = Math.floor(totalSaved / pizzaPrice);
+            const movieCount = Math.floor(totalSaved / moviePrice);
+            const gameCount = Math.floor(totalSaved / gamePrice);
+            const phoneMonths = Math.floor(totalSaved / phonePrice);
+            const gymMonths = Math.floor(totalSaved / gymPrice);
+            
+            document.getElementById('saving-comparison').innerHTML = `
+                <div class="comparison-item">
+                    <div class="comparison-icon">☕</div>
+                    <div>${coffeeCount}杯咖啡</div>
+                </div>
+                <div class="comparison-item">
+                    <div class="comparison-icon">🍕</div>
+                    <div>${pizzaCount}顿披萨</div>
+                </div>
+                <div class="comparison-item">
+                    <div class="comparison-icon">🎬</div>
+                    <div>${movieCount}场电影</div>
+                </div>
+                <div class="comparison-item">
+                    <div class="comparison-icon">🎮</div>
+                    <div>${gameCount}个游戏</div>
+                </div>
+                <div class="comparison-item">
+                    <div class="comparison-icon">📱</div>
+                    <div>${phoneMonths}个月话费</div>
+                </div>
+                <div class="comparison-item">
+                    <div class="comparison-icon">🏃‍♂️</div>
+                    <div>${gymMonths}个月健身</div>
+                </div>
+            `;
+            
+            // 时间维度
+            const weekSaved = moneySavedToday * 7;
+            const monthSaved = moneySavedToday * 30;
+            const yearSaved = moneySavedToday * 365;
+            
+            document.getElementById('time-dimension').innerHTML = `
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; text-align: center;">
+                    <div style="background: var(--card-bg); padding: 12px; border-radius: 8px;">
+                        <div style="font-size: 18px; font-weight: 600; color: var(--primary-green);">¥${Math.round(weekSaved)}</div>
+                        <div style="font-size: 12px; color: var(--text-secondary);">一周节省</div>
+                    </div>
+                    <div style="background: var(--card-bg); padding: 12px; border-radius: 8px;">
+                        <div style="font-size: 18px; font-weight: 600; color: var(--primary-green);">¥${Math.round(monthSaved)}</div>
+                        <div style="font-size: 12px; color: var(--text-secondary);">一月节省</div>
+                    </div>
+                    <div style="background: var(--card-bg); padding: 12px; border-radius: 8px; grid-column: 1 / -1;">
+                        <div style="font-size: 24px; font-weight: 600; color: var(--primary-green);">¥${Math.round(yearSaved)}</div>
+                        <div style="font-size: 14px; color: var(--text-secondary);">一年可节省</div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // 更新健康进度
+        function updateHealthProgress() {
+            const today = new Date().toDateString();
+            const todayRecord = appData.records.find(r => r.date === today);
+            const todayCount = todayRecord ? todayRecord.count : 0;
+            
+            const expected = appData.settings.dailyAmount;
+            const reductionRate = expected > 0 ? Math.max(0, (expected - todayCount) / expected) : 0;
+            
+            // 更新各项健康指标
+            const healthItems = [
+                { name: 'lung', icon: '🫁', baseProgress: 20 },
+                { name: 'heart', icon: '❤️', baseProgress: 15 },
+                { name: 'taste', icon: '👅', baseProgress: 25 },
+                { name: 'energy', icon: '⚡', baseProgress: 30 }
+            ];
+            
+            healthItems.forEach(item => {
+                const progress = Math.min(100, item.baseProgress + (reductionRate * 60));
+                const progressBar = document.querySelector(`[data-target="${item.name}"]`);
+                const percentElement = progressBar.closest('.health-item').querySelector('.health-percent');
+                
+                progressBar.style.width = `${progress}%`;
+                percentElement.textContent = `${Math.round(progress)}%`;
+            });
+        }
+        
+        // 保存设置
+        function saveSettings() {
+            appData.settings.habitYears = parseInt(document.getElementById('habit-years').value) || 0;
+            appData.settings.dailyAmount = parseInt(document.getElementById('daily-amount').value) || 0;
+            appData.settings.packPrice = parseInt(document.getElementById('pack-price').value) || 0;
+            appData.settings.packSize = parseInt(document.getElementById('pack-size').value) || 20;
+            
+            saveData();
+            
+            // 显示保存成功
+            const btn = event.target;
+            const originalText = btn.textContent;
+            btn.textContent = '✓ 已保存';
+            btn.style.background = 'var(--success-color)';
+            
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.style.background = '';
+            }, 2000);
+            
+            // 更新其他页面
+            updateSavingPage();
+            updateHealthProgress();
+        }
+        
+        // 数据存储
+        function saveData() {
+            localStorage.setItem('smokeTrackerData', JSON.stringify(appData));
+        }
+        
+        function loadData() {
+            const saved = localStorage.getItem('smokeTrackerData');
+            if (saved) {
+                appData = JSON.parse(saved);
+                
+                // 填充设置表单
+                document.getElementById('habit-years').value = appData.settings.habitYears || '';
+                document.getElementById('daily-amount').value = appData.settings.dailyAmount || '';
+                document.getElementById('pack-price').value = appData.settings.packPrice || '';
+                document.getElementById('pack-size').value = appData.settings.packSize || 20;
+            }
+        }
+        
+        // 导出数据
+        function exportData() {
+            const dataStr = JSON.stringify(appData, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `烟迹终结者数据_${new Date().toLocaleDateString()}.json`;
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+        
+        // 清除数据
+        function clearData() {
+            if (confirm('确定要清除所有数据吗？此操作不可恢复。')) {
+                appData = {
+                    records: [],
+                    settings: {
+                        habitYears: 0,
+                        dailyAmount: 0,
+                        packPrice: 0,
+                        packSize: 20
+                    }
+                };
+                saveData();
+                updateUI();
+                updateChart();
+                updateHealthProgress();
+                
+                // 清空表单
+                document.getElementById('habit-years').value = '';
+                document.getElementById('daily-amount').value = '';
+                document.getElementById('pack-price').value = '';
+                document.getElementById('pack-size').value = '20';
+                
+                alert('数据已清除');
+            }
+        }
+        
+        // PWA支持
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').then(function(registration) {
+                console.log('ServiceWorker 注册成功');
+            }).catch(function(err) {
+                console.log('ServiceWorker 注册失败: ', err);
+            });
+        }
+    </script>
 </body>
 </html>
