@@ -35,7 +35,7 @@
             --warning-color: #FF9500;
             --encourage-color: #5856D6;
             --prediction-color: #AF52DE;
-            --damage-color: #FF3B30;
+            --recovery-color: #00C7BE;
         }
         
         body {
@@ -217,12 +217,12 @@
             position: relative;
         }
         
-        /* 宅男好物对比 */
+        /* 宅男好物对比 - 折叠版 */
         .geek-comparison {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+            grid-template-columns: repeat(2, 1fr);
             gap: 12px;
-            margin-top: 16px;
+            margin-bottom: 12px;
         }
         
         .geek-item {
@@ -233,6 +233,11 @@
             text-align: center;
             font-size: 13px;
             box-shadow: 0 4px 16px rgba(0, 122, 255, 0.3);
+            transition: transform 0.2s ease;
+        }
+        
+        .geek-item:hover {
+            transform: translateY(-2px);
         }
         
         .geek-icon {
@@ -240,21 +245,50 @@
             margin-bottom: 8px;
         }
         
-        /* 总支出显示 */
+        .show-more-btn {
+            background: var(--text-secondary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 8px;
+        }
+        
+        .show-more-btn:hover {
+            background: #666;
+        }
+        
+        .geek-more {
+            display: none;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 12px;
+        }
+        
+        .geek-more.show {
+            display: grid;
+        }
+        
+        /* 总支出显示 - 精确到角 */
         .total-expense {
-            background: linear-gradient(135deg, var(--damage-color), #FF6B6B);
+            background: linear-gradient(135deg, var(--secondary-orange), #FFB84D);
             color: white;
             padding: 20px;
             border-radius: 16px;
             margin-bottom: 16px;
             text-align: center;
-            box-shadow: 0 4px 16px rgba(255, 59, 48, 0.3);
+            box-shadow: 0 4px 16px rgba(255, 149, 0, 0.3);
         }
         
         .expense-amount {
             font-size: 36px;
             font-weight: 700;
             margin-bottom: 8px;
+            font-family: 'Courier New', monospace;
         }
         
         .expense-label {
@@ -262,8 +296,8 @@
             opacity: 0.9;
         }
         
-        /* 身体破坏进度 */
-        .damage-item {
+        /* 身体恢复进度 - 正向引导 */
+        .recovery-item {
             display: flex;
             align-items: center;
             margin-bottom: 16px;
@@ -271,51 +305,58 @@
             background: var(--card-bg);
             border-radius: 12px;
             border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
         }
         
-        .damage-icon {
+        .recovery-item:hover {
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .recovery-icon {
             font-size: 24px;
             margin-right: 12px;
             width: 40px;
             text-align: center;
         }
         
-        .damage-info {
+        .recovery-info {
             flex: 1;
         }
         
-        .damage-name {
+        .recovery-name {
             font-weight: 500;
             margin-bottom: 4px;
-            color: var(--damage-color);
+            color: var(--recovery-color);
         }
         
-        .damage-progress {
+        .recovery-progress {
             background: var(--border-color);
             height: 8px;
             border-radius: 4px;
             overflow: hidden;
         }
         
-        .damage-progress-bar {
+        .recovery-progress-bar {
             height: 100%;
-            background: linear-gradient(90deg, var(--damage-color), #FF6B6B);
+            background: linear-gradient(90deg, var(--recovery-color), #00D9D0);
             border-radius: 4px;
             transition: width 0.3s ease;
         }
         
-        .damage-percent {
+        .recovery-percent {
             font-size: 14px;
-            color: var(--damage-color);
+            color: var(--recovery-color);
             font-weight: 500;
         }
         
-        /* 详细破坏时间轴 */
-        .damage-timeline {
-            background: var(--card-bg);
+        /* 详细恢复时间轴 - 正向引导 */
+        .recovery-timeline {
+            background: linear-gradient(135deg, var(--recovery-color), #00D9D0);
+            color: white;
             border-radius: 16px;
             padding: 20px;
-            border-left: 4px solid var(--damage-color);
+            border-left: 4px solid var(--recovery-color);
         }
         
         .timeline-item {
@@ -332,90 +373,127 @@
             width: 12px;
             height: 12px;
             border-radius: 50%;
-            background: var(--damage-color);
+            background: white;
+            box-shadow: 0 0 0 3px var(--recovery-color);
         }
         
         .timeline-time {
             font-weight: 600;
-            color: var(--damage-color);
             font-size: 14px;
             margin-bottom: 4px;
         }
         
         .timeline-desc {
-            color: var(--text-secondary);
             font-size: 14px;
             line-height: 1.5;
+            opacity: 0.95;
         }
         
         .timeline-impact {
-            color: var(--text-primary);
             font-size: 13px;
             margin-top: 4px;
             font-weight: 500;
+            opacity: 0.9;
         }
         
-        /* 丰富鼓励内容 */
-        .encourage-card {
+        /* 鼓励栏目 - 美化版 */
+        .encourage-container {
+            text-align: center;
+            padding: 20px 0;
+        }
+        
+        .encourage-header {
             background: linear-gradient(135deg, var(--encourage-color), #7A7AE0);
             color: white;
             border-radius: 20px;
             padding: 30px;
-            margin-bottom: 20px;
-            text-align: center;
-            box-shadow: 0 4px 16px rgba(88, 86, 214, 0.3);
+            margin-bottom: 24px;
+            box-shadow: 0 8px 24px rgba(88, 86, 214, 0.3);
+            position: relative;
+            overflow: hidden;
         }
         
-        .encourage-icon {
+        .encourage-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: shimmer 3s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .encourage-icon-main {
             font-size: 48px;
             margin-bottom: 16px;
+            position: relative;
+            z-index: 1;
         }
         
-        .encourage-text {
-            font-size: 18px;
+        .encourage-text-main {
+            font-size: 20px;
             font-weight: 500;
             line-height: 1.6;
             margin-bottom: 12px;
+            position: relative;
+            z-index: 1;
         }
         
-        .encourage-author {
+        .encourage-author-main {
             font-size: 14px;
             opacity: 0.8;
+            position: relative;
+            z-index: 1;
         }
         
-        .encourage-categories {
+        .daily-quotes {
             display: grid;
-            grid-template-columns: 1fr;
-            gap: 16px;
-            margin-bottom: 20px;
+            gap: 12px;
         }
         
-        .encourage-category {
+        .quote-card {
             background: var(--card-bg);
             padding: 20px;
             border-radius: 16px;
             border: 1px solid var(--border-color);
+            position: relative;
+            transition: all 0.3s ease;
         }
         
-        .category-title {
-            font-size: 16px;
-            font-weight: 600;
+        .quote-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }
+        
+        .quote-icon {
+            font-size: 24px;
             margin-bottom: 12px;
             color: var(--encourage-color);
         }
         
-        .category-quotes {
-            display: grid;
-            gap: 8px;
+        .quote-text {
+            font-size: 16px;
+            color: var(--text-primary);
+            line-height: 1.6;
+            font-weight: 500;
         }
         
-        .category-quote {
-            padding: 12px;
-            background: var(--background);
-            border-radius: 8px;
-            font-size: 14px;
-            color: var(--text-primary);
-            border-left: 3px solid var(--encourage-color);
+        .quote-category {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: var(--encourage-color);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 500;
         }
         
         /* 设置表单 */
@@ -538,6 +616,18 @@
             background: var(--text-secondary);
         }
         
+        .btn-secondary:hover {
+            background: #666;
+        }
+        
+        .btn-danger {
+            background: var(--damage-color);
+        }
+        
+        .btn-danger:hover {
+            background: #FF2D20;
+        }
+        
         /* 响应式设计 */
         @media (max-width: 375px) {
             .container {
@@ -565,7 +655,15 @@
             }
             
             .geek-comparison {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: 1fr;
+            }
+            
+            .geek-more.show {
+                grid-template-columns: 1fr;
+            }
+            
+            .encourage-text-main {
+                font-size: 18px;
             }
         }
         
@@ -632,30 +730,21 @@
         <!-- 节省页面 -->
         <div class="page" id="saving-page">
             <div class="total-expense">
-                <div class="expense-amount">¥<span id="total-expense">0</span></div>
+                <div class="expense-amount">¥<span id="total-expense">0.00</span></div>
                 <div class="expense-label">总共已支出</div>
             </div>
             
             <div class="card">
                 <div class="card-title">💰 这些钱原来可以</div>
                 <div class="geek-comparison" id="geek-comparison">
-                    <div class="geek-item">
-                        <div class="geek-icon">🎮</div>
-                        <div>0个3A游戏</div>
-                    </div>
-                    <div class="geek-item">
-                        <div class="geek-icon">📱</div>
-                        <div>0部iPhone</div>
-                    </div>
-                    <div class="geek-item">
-                        <div class="geek-icon">💻</div>
-                        <div>0台MacBook</div>
-                    </div>
-                    <div class="geek-item">
-                        <div class="geek-icon">🎧</div>
-                        <div>0副AirPods</div>
-                    </div>
+                    <!-- 前6个项目 -->
                 </div>
+                <div class="geek-more" id="geek-more">
+                    <!-- 其余项目 -->
+                </div>
+                <button class="show-more-btn" id="show-more-btn" onclick="toggleMoreItems()">
+                    查看更多 💫
+                </button>
             </div>
             
             <div class="card">
@@ -666,158 +755,110 @@
             </div>
         </div>
         
-        <!-- 恢复页面 - 身体破坏 -->
+        <!-- 恢复页面 - 正向引导 -->
         <div class="page" id="recovery-page">
             <div class="card">
-                <div class="card-title">⚠️ 身体破坏程度</div>
+                <div class="card-title">❤️ 身体恢复进度</div>
                 
-                <div class="damage-item">
-                    <div class="damage-icon">🫁</div>
-                    <div class="damage-info">
-                        <div class="damage-name">肺部损伤</div>
-                        <div class="damage-progress">
-                            <div class="damage-progress-bar" style="width: 0%" data-target="lung"></div>
+                <div class="recovery-item">
+                    <div class="recovery-icon">🫁</div>
+                    <div class="recovery-info">
+                        <div class="recovery-name">肺部活力</div>
+                        <div class="recovery-progress">
+                            <div class="recovery-progress-bar" style="width: 0%" data-target="lung"></div>
                         </div>
                     </div>
-                    <div class="damage-percent">0%</div>
+                    <div class="recovery-percent">0%</div>
                 </div>
                 
-                <div class="damage-item">
-                    <div class="damage-icon">❤️</div>
-                    <div class="damage-info">
-                        <div class="damage-name">心血管损伤</div>
-                        <div class="damage-progress">
-                            <div class="damage-progress-bar" style="width: 0%" data-target="heart"></div>
+                <div class="recovery-item">
+                    <div class="recovery-icon">❤️</div>
+                    <div class="recovery-info">
+                        <div class="recovery-name">心血管健康</div>
+                        <div class="recovery-progress">
+                            <div class="recovery-progress-bar" style="width: 0%" data-target="heart"></div>
                         </div>
                     </div>
-                    <div class="damage-percent">0%</div>
+                    <div class="recovery-percent">0%</div>
                 </div>
                 
-                <div class="damage-item">
-                    <div class="damage-icon">👅</div>
-                    <div class="damage-info">
-                        <div class="damage-name">味觉退化</div>
-                        <div class="damage-progress">
-                            <div class="damage-progress-bar" style="width: 0%" data-target="taste"></div>
+                <div class="recovery-item">
+                    <div class="recovery-icon">👅</div>
+                    <div class="recovery-info">
+                        <div class="recovery-name">味觉敏锐</div>
+                        <div class="recovery-progress">
+                            <div class="recovery-progress-bar" style="width: 0%" data-target="taste"></div>
                         </div>
                     </div>
-                    <div class="damage-percent">0%</div>
+                    <div class="recovery-percent">0%</div>
                 </div>
                 
-                <div class="damage-item">
-                    <div class="damage-icon">⚡</div>
-                    <div class="damage-info">
-                        <div class="damage-name">精力下降</div>
-                        <div class="damage-progress">
-                            <div class="damage-progress-bar" style="width: 0%" data-target="energy"></div>
+                <div class="recovery-item">
+                    <div class="recovery-icon">⚡</div>
+                    <div class="recovery-info">
+                        <div class="recovery-name">精力充沛</div>
+                        <div class="recovery-progress">
+                            <div class="recovery-progress-bar" style="width: 0%" data-target="energy"></div>
                         </div>
                     </div>
-                    <div class="damage-percent">0%</div>
+                    <div class="recovery-percent">0%</div>
                 </div>
             </div>
             
-            <div class="damage-timeline">
-                <div class="card-title">⏰ 身体破坏时间轴</div>
+            <div class="recovery-timeline">
+                <div class="card-title">⏰ 身体恢复时间轴</div>
                 
                 <div class="timeline-item">
-                    <div class="timeline-time">🚬 点燃瞬间</div>
-                    <div class="timeline-desc">尼古丁7秒到达大脑，心率立即上升10-15次/分钟</div>
-                    <div class="timeline-impact">⚡ 即时影响：血压升高，血管收缩</div>
-                </div>
-                
-                <div class="timeline-item">
-                    <div class="timeline-time">🕐 1小时后</div>
-                    <div class="timeline-desc">血液中的一氧化碳浓度达到峰值，氧气输送能力下降</div>
-                    <div class="timeline-impact">🫁 肺部影响：肺泡开始发炎，氧气交换效率下降</div>
+                    <div class="timeline-time">🕐 20分钟后</div>
+                    <div class="timeline-desc">心率开始恢复正常，血压逐渐平稳</div>
+                    <div class="timeline-impact">💪 循环改善：血液循环更加顺畅</div>
                 </div>
                 
                 <div class="timeline-item">
                     <div class="timeline-time">🕕 8小时后</div>
-                    <div class="timeline-desc">血液中氧气含量持续偏低，细胞开始缺氧</div>
-                    <div class="timeline-impact">💔 心脏负担：心肌缺氧，心脏病风险增加</div>
+                    <div class="timeline-desc">血液含氧量提升，细胞活力增强</div>
+                    <div class="timeline-impact">🌟 能量提升：身体含氧量恢复正常水平</div>
                 </div>
                 
                 <div class="timeline-item">
                     <div class="timeline-time">🕐 24小时后</div>
-                    <div class="timeline-desc">支气管开始痉挛，肺部清洁功能下降30%</div>
-                    <div class="timeline-impact">🤧 呼吸系统：痰液增多，咳嗽反射减弱</div>
+                    <div class="timeline-desc">肺部开始自我修复，清洁功能逐步恢复</div>
+                    <div class="timeline-impact">🫁 呼吸改善：肺部纤毛重新开始工作</div>
                 </div>
                 
                 <div class="timeline-item">
                     <div class="timeline-time">📅 1周后</div>
-                    <div class="timeline-desc">味觉细胞开始萎缩，味蕾数量减少25%</div>
-                    <div class="timeline-impact">👅 感官退化：味觉迟钝，食欲下降</div>
+                    <div class="timeline-desc">味觉敏感度提升，食欲改善</div>
+                    <div class="timeline-impact">👅 感官恢复：味蕾功能显著改善</div>
                 </div>
                 
                 <div class="timeline-item">
                     <div class="timeline-time">📅 1个月后</div>
-                    <div class="timeline-desc">皮肤胶原蛋白流失加速，皱纹增加，面色暗黄</div>
-                    <div class="timeline-impact">🌟 外貌变化：皮肤老化，牙齿变黄，口臭加重</div>
+                    <div class="timeline-desc">皮肤状态改善，面色更加红润有光泽</div>
+                    <div class="timeline-impact">✨ 外貌改善：胶原蛋白合成恢复正常</div>
                 </div>
                 
                 <div class="timeline-item">
                     <div class="timeline-time">📅 1年后</div>
-                    <div class="timeline-desc">肺部纤毛基本丧失功能，肺癌风险增加10倍</div>
-                    <div class="timeline-impact">🫁 严重损伤：肺功能下降50%，癌症风险激增</div>
-                </div>
-                
-                <div class="timeline-item">
-                    <div class="timeline-time">⚠️ 长期影响</div>
-                    <div class="timeline-desc">心血管疾病风险增加200%，预期寿命减少10年</div>
-                    <div class="timeline-impact">💀 生命威胁：心梗、中风、癌症风险大幅上升</div>
+                    <div class="timeline-desc">肺功能大幅提升，心血管风险显著降低</div>
+                    <div class="timeline-impact">🎉 健康胜利：肺癌风险降低50%，预期寿命延长</div>
                 </div>
             </div>
         </div>
         
-        <!-- 鼓励页面 -->
+        <!-- 鼓励页面 - 美化版 -->
         <div class="page" id="encourage-page">
-            <div class="encourage-card">
-                <div class="encourage-icon" id="encourage-icon">✨</div>
-                <div class="encourage-text" id="encourage-text">
-                    每一次记录，都是对生活的认真态度
-                </div>
-                <div class="encourage-author" id="encourage-author">— 烟迹终结者</div>
-            </div>
-            
-            <div class="encourage-categories">
-                <div class="encourage-category">
-                    <div class="category-title">💪 力量与坚持</div>
-                    <div class="category-quotes">
-                        <div class="category-quote">真正的强者，不是没有眼泪的人，而是含着眼泪依然奔跑的人</div>
-                        <div class="category-quote">每一次想要放弃的时候，就想想为什么开始</div>
-                        <div class="category-quote">坚持不是为了证明给谁看，而是为了不辜负自己</div>
-                        <div class="category-quote">你的潜力远比你想象的要大得多</div>
+            <div class="encourage-container">
+                <div class="encourage-header">
+                    <div class="encourage-icon-main" id="encourage-icon-main">✨</div>
+                    <div class="encourage-text-main" id="encourage-text-main">
+                        每一次记录，都是对生活的认真态度
                     </div>
+                    <div class="encourage-author-main" id="encourage-author-main">— 烟迹终结者</div>
                 </div>
                 
-                <div class="encourage-category">
-                    <div class="category-title">🌱 成长与改变</div>
-                    <div class="category-quotes">
-                        <div class="category-quote">改变不是为了变得更好，而是为了成为真正的自己</div>
-                        <div class="category-quote">成长的过程总是痛苦的，但结果总是美好的</div>
-                        <div class="category-quote">今天的你比昨天更强大，这就是进步</div>
-                        <div class="category-quote">小步前进也是前进，不要小看自己的力量</div>
-                    </div>
-                </div>
-                
-                <div class="encourage-category">
-                    <div class="category-title">🎯 目标与专注</div>
-                    <div class="category-quotes">
-                        <div class="category-quote">专注当下，未来自然明朗</div>
-                        <div class="category-quote">目标不是用来达成的，而是用来指引方向的</div>
-                        <div class="category-quote">每一个小目标的实现，都是通往大目标的阶梯</div>
-                        <div class="category-quote">成功不是终点，失败也不是终结，唯有勇气才是永恒</div>
-                    </div>
-                </div>
-                
-                <div class="encourage-category">
-                    <div class="category-title">🌟 希望与未来</div>
-                    <div class="category-quotes">
-                        <div class="category-quote">明天的太阳依旧会升起，带着希望出发</div>
-                        <div class="category-quote">你值得拥有更好的生活，更好的健康，更好的自己</div>
-                        <div class="category-quote">每一个结束都是新的开始，每一个困难都是成长的机会</div>
-                        <div class="category-quote">相信自己，你正在创造属于自己的奇迹</div>
-                    </div>
+                <div class="daily-quotes" id="daily-quotes">
+                    <!-- 6句随机鼓励话 -->
                 </div>
             </div>
         </div>
@@ -860,11 +901,11 @@
                 </div>
                 
                 <button class="btn btn-secondary" onclick="exportData()" style="margin-bottom: 12px;">导出数据</button>
-                <button class="btn btn-secondary" onclick="clearData()">清除数据</button>
+                <button class="btn btn-danger" onclick="clearRecordsOnly()">清除记录</button>
             </div>
             
             <div class="card" style="text-align: center; color: var(--text-secondary); font-size: 12px;">
-                <p>烟迹终结者 v1.3</p>
+                <p>烟迹终结者 v1.4</p>
                 <p>记录习惯，发现生活的小确幸</p>
             </div>
         </div>
@@ -881,8 +922,8 @@
             <span class="nav-label">节省</span>
         </button>
         <button class="nav-item" onclick="showPage('recovery-page')">
-            <span class="nav-icon">⚠️</span>
-            <span class="nav-label">破坏</span>
+            <span class="nav-icon">❤️</span>
+            <span class="nav-label">恢复</span>
         </button>
         <button class="nav-item" onclick="showPage('encourage-page')">
             <span class="nav-icon">💫</span>
@@ -908,8 +949,9 @@
 
         // 导出格式
         let exportFormat = 'txt';
+        let showMoreItems = false;
 
-        // 宅男好物库
+        // 宅男好物库 - 12个项目
         const geekItems = [
             { icon: '🎮', name: '3A游戏', price: 300, desc: '个' },
             { icon: '📱', name: 'iPhone', price: 8000, desc: '部' },
@@ -925,10 +967,9 @@
             { icon: '🎧', name: '游戏耳机', price: 600, desc: '副' }
         ];
 
-        // 丰富鼓励内容库
+        // 鼓励话语库 - 精选6类，每类多句
         const encourageLibrary = {
-            icons: ['✨', '🌟', '💫', '🎯', '🌈', '🔥', '💎', '🏆'],
-            mainEncouragements: [
+            main: [
                 { text: "每一次记录，都是对生活的认真态度", author: "烟迹终结者" },
                 { text: "数据不会说谎，它正在讲述您的故事", author: "烟迹终结者" },
                 { text: "小改变，正在积累成大不同", author: "烟迹终结者" },
@@ -940,25 +981,43 @@
                     "真正的强者，不是没有眼泪的人，而是含着眼泪依然奔跑的人",
                     "每一次想要放弃的时候，就想想为什么开始",
                     "坚持不是为了证明给谁看，而是为了不辜负自己",
-                    "你的潜力远比你想象的要大得多"
+                    "你的潜力远比你想象的要大得多",
+                    "当你觉得坚持不下去的时候，正是成长最快的时候"
                 ],
                 growth: [
                     "改变不是为了变得更好，而是为了成为真正的自己",
                     "成长的过程总是痛苦的，但结果总是美好的",
                     "今天的你比昨天更强大，这就是进步",
-                    "小步前进也是前进，不要小看自己的力量"
+                    "小步前进也是前进，不要小看自己的力量",
+                    "每一个困难都是成长的机会，每一次挑战都是进步的阶梯"
                 ],
                 focus: [
                     "专注当下，未来自然明朗",
                     "目标不是用来达成的，而是用来指引方向的",
                     "每一个小目标的实现，都是通往大目标的阶梯",
-                    "成功不是终点，失败也不是终结，唯有勇气才是永恒"
+                    "成功不是终点，失败也不是终结，唯有勇气才是永恒",
+                    "把注意力放在过程上，结果自然会好"
                 ],
                 hope: [
                     "明天的太阳依旧会升起，带着希望出发",
                     "你值得拥有更好的生活，更好的健康，更好的自己",
                     "每一个结束都是新的开始，每一个困难都是成长的机会",
-                    "相信自己，你正在创造属于自己的奇迹"
+                    "相信自己，你正在创造属于自己的奇迹",
+                    "希望不是看到未来，而是相信未来"
+                ],
+                daily: [
+                    "今日份的努力，是明日份的收获",
+                    "记录今天的自己，是为了更好的明天",
+                    "每一个现在，都是未来的回忆",
+                    "生活不是等待风暴过去，而是学会在雨中起舞",
+                    "最好的时光，就是当下的每一分每一秒"
+                ],
+                wisdom: [
+                    "智慧不在于知道答案，而在于提出正确的问题",
+                    "真正的自由，是自律的结果",
+                    "简单的生活，不是少，而是更好",
+                    "慢下来，才能更快",
+                    "少即是多，慢即是快"
                 ]
             }
         };
@@ -969,8 +1028,9 @@
             updateUI();
             initChart();
             updateHealthProgress();
-            updateEncouragement();
             updatePrediction();
+            updateEncouragement();
+            initGeekItems();
         });
 
         // 页面切换
@@ -985,7 +1045,6 @@
             });
             event.target.closest('.nav-item').classList.add('active');
             
-            // 更新对应页面数据
             if (pageId === 'saving-page') {
                 updateSavingPage();
             } else if (pageId === 'recovery-page') {
@@ -1015,12 +1074,53 @@
             updateUI();
             updateChart();
             updateHealthProgress();
-            updateEncouragement();
             updatePrediction();
+            updateEncouragement();
             
-            // 触觉反馈
             if (navigator.vibrate) {
                 navigator.vibrate(50);
+            }
+        }
+
+        // 初始化好物显示
+        function initGeekItems() {
+            const mainContainer = document.getElementById('geek-comparison');
+            const moreContainer = document.getElementById('geek-more');
+            
+            // 显示前6个
+            mainContainer.innerHTML = geekItems.slice(0, 6).map(item => {
+                return `
+                    <div class="geek-item">
+                        <div class="geek-icon">${item.icon}</div>
+                        <div>0${item.desc}${item.name}</div>
+                    </div>
+                `;
+            }).join('');
+            
+            // 其余项目
+            moreContainer.innerHTML = geekItems.slice(6).map(item => {
+                return `
+                    <div class="geek-item">
+                        <div class="geek-icon">${item.icon}</div>
+                        <div>0${item.desc}${item.name}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // 切换更多项目
+        function toggleMoreItems() {
+            const moreContainer = document.getElementById('geek-more');
+            const btn = document.getElementById('show-more-btn');
+            
+            showMoreItems = !showMoreItems;
+            
+            if (showMoreItems) {
+                moreContainer.classList.add('show');
+                btn.textContent = '收起 ✨';
+            } else {
+                moreContainer.classList.remove('show');
+                btn.textContent = '查看更多 💫';
             }
         }
 
@@ -1115,57 +1215,53 @@
             return result;
         }
 
-        // 更新鼓励内容
+        // 更新鼓励内容 - 随机6句
         function updateEncouragement() {
-            const randomEncourage = encourageLibrary.mainEncouragements[
-                Math.floor(Math.random() * encourageLibrary.mainEncouragements.length)
-            ];
+            // 主鼓励语
+            const randomMain = encourageLibrary.main[Math.floor(Math.random() * encourageLibrary.main.length)];
             
-            document.getElementById('encourage-icon').textContent = 
-                encourageLibrary.icons[Math.floor(Math.random() * encourageLibrary.icons.length)];
-            document.getElementById('encourage-text').textContent = randomEncourage.text;
-            document.getElementById('encourage-author').textContent = `— ${randomEncourage.author}`;
+            document.getElementById('encourage-icon-main').textContent = 
+                ['✨', '🌟', '💫', '🎯', '🌈', '🔥', '💎', '🏆'][Math.floor(Math.random() * 8)];
+            document.getElementById('encourage-text-main').textContent = randomMain.text;
+            document.getElementById('encourage-author-main').textContent = `— ${randomMain.author}`;
             
-            updateDataEncouragement();
-        }
-
-        // 更新数据鼓励
-        function updateDataEncouragement() {
-            const today = new Date().toDateString();
-            const todayRecord = appData.records.find(r => r.date === today);
-            const todayCount = todayRecord ? todayRecord.count : 0;
+            // 每日6句 - 从不同类别随机选择
+            const categories = Object.keys(encourageLibrary.categories);
+            const selectedQuotes = [];
             
-            const weekData = getWeekData();
-            const weekAvg = weekData.length > 0 ? Math.round(weekData.reduce((sum, d) => sum + d.count, 0) / weekData.length) : 0;
-            
-            let encouragementText = '';
-            
-            if (todayCount === 0 && weekAvg === 0) {
-                encouragementText = '<div style="color: var(--text-secondary);">开始记录，让数据给您惊喜</div>';
-            } else if (todayCount < weekAvg) {
-                encouragementText = `
-                    <div style="color: var(--primary-green);">
-                        🎉 今日表现不错！<br>
-                        <small style="color: var(--text-secondary);">继续保持这个节奏</small>
-                    </div>
-                `;
-            } else if (todayCount > weekAvg) {
-                encouragementText = `
-                    <div style="color: var(--warning-color);">
-                        💡 今日记录较多<br>
-                        <small style="color: var(--text-secondary);">明天又是新的一天</small>
-                    </div>
-                `;
-            } else {
-                encouragementText = `
-                    <div style="color: var(--encourage-color);">
-                        🌟 保持稳定状态<br>
-                        <small style="color: var(--text-secondary);">稳定也是一种进步</small>
-                    </div>
-                `;
+            // 从每个类别随机选1-2句，确保总共6句
+            for (let i = 0; i < 6; i++) {
+                const category = categories[i % categories.length];
+                const quotes = encourageLibrary.categories[category];
+                const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+                
+                selectedQuotes.push({
+                    text: randomQuote,
+                    category: category,
+                    icon: ['💪', '🌱', '🎯', '🌟', '📅', '🧠'][i % 6]
+                });
             }
             
-            document.getElementById('data-encouragement').innerHTML = encouragementText;
+            // 显示6句鼓励话
+            const quotesContainer = document.getElementById('daily-quotes');
+            quotesContainer.innerHTML = selectedQuotes.map((quote, index) => {
+                const categoryNames = {
+                    strength: '力量',
+                    growth: '成长',
+                    focus: '专注',
+                    hope: '希望',
+                    daily: '日常',
+                    wisdom: '智慧'
+                };
+                
+                return `
+                    <div class="quote-card" style="animation-delay: ${index * 0.1}s">
+                        <div class="quote-icon">${quote.icon}</div>
+                        <div class="quote-text">${quote.text}</div>
+                        <div class="quote-category">${categoryNames[quote.category]}</div>
+                    </div>
+                `;
+            }).join('');
         }
 
         // 更新UI
@@ -1242,24 +1338,6 @@
                         <small>保持稳定的状态</small>
                     </div>
                 `;
-            }
-        }
-
-        // 更新预测
-        function updatePrediction() {
-            const prediction = predictTomorrow();
-            const predictionElement = document.getElementById('prediction-value');
-            const predictionDesc = document.querySelector('.prediction-desc');
-            
-            if (!predictionElement || !predictionDesc) return;
-            
-            if (prediction.count === '--') {
-                predictionElement.textContent = '--';
-                predictionDesc.textContent = '需要更多数据进行分析';
-            } else {
-                predictionElement.textContent = `${prediction.count} 支`;
-                const confidencePercent = Math.round(prediction.confidence * 100);
-                predictionDesc.textContent = `置信度 ${confidencePercent}%`;
             }
         }
 
@@ -1341,27 +1419,26 @@
         // 更新节省页面
         function updateSavingPage() {
             if (appData.settings.packPrice === 0) {
-                document.getElementById('total-expense').textContent = '0';
-                document.getElementById('geek-comparison').innerHTML = `
-                    <div class="geek-item">
-                        <div class="geek-icon">⚙️</div>
-                        <div>请先设置信息</div>
-                    </div>
-                `;
+                document.getElementById('total-expense').textContent = '0.00';
                 return;
             }
             
-            // 计算总支出
+            // 计算总支出 - 精确到角
             let totalExpense = 0;
             appData.records.forEach(record => {
                 const expense = record.count * (appData.settings.packPrice / appData.settings.packSize);
                 totalExpense += expense;
             });
             
-            document.getElementById('total-expense').textContent = Math.round(totalExpense);
+            // 显示精确到角
+            document.getElementById('total-expense').textContent = totalExpense.toFixed(2);
             
-            // 更新宅男好物对比（与总支出关联）
-            const geekHtml = geekItems.map(item => {
+            // 更新好物对比
+            const mainContainer = document.getElementById('geek-comparison');
+            const moreContainer = document.getElementById('geek-more');
+            
+            // 前6个（已显示）
+            mainContainer.innerHTML = geekItems.slice(0, 6).map(item => {
                 const count = Math.floor(totalExpense / item.price);
                 return `
                     <div class="geek-item">
@@ -1371,7 +1448,16 @@
                 `;
             }).join('');
             
-            document.getElementById('geek-comparison').innerHTML = geekHtml;
+            // 其余项目（折叠状态）
+            moreContainer.innerHTML = geekItems.slice(6).map(item => {
+                const count = Math.floor(totalExpense / item.price);
+                return `
+                    <div class="geek-item">
+                        <div class="geek-icon">${item.icon}</div>
+                        <div>${count}${item.desc}${item.name}</div>
+                    </div>
+                `;
+            }).join('');
             
             // 时间维度
             const avgDaily = appData.records.length > 0 ? 
@@ -1382,55 +1468,58 @@
             document.getElementById('time-dimension').innerHTML = `
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; text-align: center;">
                     <div style="background: var(--card-bg); padding: 12px; border-radius: 8px;">
-                        <div style="font-size: 18px; font-weight: 600; color: var(--damage-color);">¥${Math.round(weekExpense)}</div>
+                        <div style="font-size: 18px; font-weight: 600; color: var(--secondary-orange);">¥${weekExpense.toFixed(2)}</div>
                         <div style="font-size: 12px; color: var(--text-secondary);">周均支出</div>
                     </div>
                     <div style="background: var(--card-bg); padding: 12px; border-radius: 8px;">
-                        <div style="font-size: 18px; font-weight: 600; color: var(--damage-color);">¥${Math.round(monthExpense)}</div>
+                        <div style="font-size: 18px; font-weight: 600; color: var(--secondary-orange);">¥${monthExpense.toFixed(2)}</div>
                         <div style="font-size: 12px; color: var(--text-secondary);">月均支出</div>
                     </div>
                 </div>
                 <div style="margin-top: 12px; padding: 12px; background: var(--background); border-radius: 8px; text-align: center;">
                     <div style="font-size: 14px; color: var(--text-secondary);">
-                        💡 如果减少一半，一年可节省 ¥${Math.round(monthExpense * 6)}
+                        💡 如果减少一半，一年可节省 ¥${(monthExpense * 6).toFixed(2)}
                     </div>
                 </div>
             `;
         }
 
-        // 更新身体破坏进度（反向显示）
+        // 更新身体恢复进度（正向引导）
         function updateHealthProgress() {
             const today = new Date().toDateString();
             const todayRecord = appData.records.find(r => r.date === today);
             const todayCount = todayRecord ? todayRecord.count : 0;
             
+            // 基于历史数据计算恢复程度（正向逻辑）
             const weekData = getWeekData();
             const avgWeekCount = weekData.length > 0 ? 
                 weekData.reduce((sum, d) => sum + d.count, 0) / weekData.length : 0;
             
-            let damageRate = 0;
-            if (avgWeekCount > 0) {
-                damageRate = Math.min(1, todayCount / avgWeekCount);
+            // 恢复程度与减少量正相关
+            let recoveryRate = 0;
+            if (avgWeekCount > 0 && todayCount < avgWeekCount) {
+                recoveryRate = Math.min(1, (avgWeekCount - todayCount) / avgWeekCount);
             }
             
-            if (appData.records.length < 7) {
-                damageRate = 0.3;
+            // 基础恢复程度（只要有记录就开始恢复）
+            if (appData.records.length > 0) {
+                recoveryRate = Math.max(0.2, recoveryRate + 0.2); // 最低20%恢复
             }
             
-            const damageItems = [
-                { name: 'lung', icon: '🫁', baseDamage: 25 },
-                { name: 'heart', icon: '❤️', baseDamage: 20 },
-                { name: 'taste', icon: '👅', baseDamage: 30 },
-                { name: 'energy', icon: '⚡', baseDamage: 35 }
+            const recoveryItems = [
+                { name: 'lung', icon: '🫁', baseRecovery: 30 },
+                { name: 'heart', icon: '❤️', baseRecovery: 25 },
+                { name: 'taste', icon: '👅', baseRecovery: 35 },
+                { name: 'energy', icon: '⚡', baseRecovery: 40 }
             ];
             
-            damageItems.forEach(item => {
-                const damage = Math.min(100, item.baseDamage + (damageRate * 40));
+            recoveryItems.forEach(item => {
+                const recovery = Math.min(100, item.baseRecovery + (recoveryRate * 50));
                 const progressBar = document.querySelector(`[data-target="${item.name}"]`);
-                const percentElement = progressBar.closest('.damage-item').querySelector('.damage-percent');
+                const percentElement = progressBar.closest('.recovery-item').querySelector('.recovery-percent');
                 
-                progressBar.style.width = `${damage}%`;
-                percentElement.textContent = `${Math.round(damage)}%`;
+                progressBar.style.width = `${recovery}%`;
+                percentElement.textContent = `${Math.round(recovery)}%`;
             });
         }
 
@@ -1457,6 +1546,20 @@
             updatePrediction();
         }
 
+        // 只清除记录，保留设置
+        function clearRecordsOnly() {
+            if (confirm('确定要清除所有记录数据吗？个人信息设置将保留。')) {
+                appData.records = [];
+                saveData();
+                updateUI();
+                updateChart();
+                updateHealthProgress();
+                updatePrediction();
+                
+                alert('记录已清除，设置已保留');
+            }
+        }
+
         // 选择导出格式
         function selectExportFormat(format) {
             exportFormat = format;
@@ -1477,24 +1580,29 @@
 
         // 导出为TXT格式
         function exportToTXT() {
+            let totalExpense = 0;
+            appData.records.forEach(record => {
+                const expense = record.count * (appData.settings.packPrice / appData.settings.packSize);
+                totalExpense += expense;
+            });
+
             let content = `烟迹终结者 - 数据导出报告
 导出时间：${new Date().toLocaleString()}
 =====================================
 
 【个人信息设置】
 习惯时长：${appData.settings.habitYears} 年
-每盒价格：¥${appData.settings.packPrice}
+每盒价格：¥${appData.settings.packPrice.toFixed(2)}
 每盒数量：${appData.settings.packSize} 支
 
 【统计摘要】
 总记录天数：${appData.records.length} 天
 总记录数量：${appData.records.reduce((sum, r) => sum + r.count, 0)} 支
-平均每日：${appData.records.length > 0 ? (appData.records.reduce((sum, r) => sum + r.count, 0) / appData.records.length).toFixed(1) : 0} 支
-总支出：¥${appData.records.length > 0 ? Math.round(appData.records.reduce((sum, r) => sum + r.count * (appData.settings.packPrice / appData.settings.packSize), 0)) : 0}
+平均每日：${appData.records.length > 0 ? (appData.records.reduce((sum, r) => sum + r.count, 0) / appData.records.length).toFixed(2) : 0} 支
+总支出：¥${totalExpense.toFixed(2)}
 
 【宅男好物对比】
 ${geekItems.map(item => {
-    const totalExpense = appData.records.reduce((sum, r) => sum + r.count * (appData.settings.packPrice / appData.settings.packSize), 0);
     const count = Math.floor(totalExpense / item.price);
     return `${item.icon} ${item.name}：${count}${item.desc} (价值¥${item.price})`;
 }).join('\n')}
@@ -1508,18 +1616,18 @@ ${appData.records.map(record => {
 }).join('\n')}
 
 【趋势分析】
-本周平均：${getWeekData().length > 0 ? (getWeekData().reduce((sum, d) => sum + d.count, 0) / getWeekData().length).toFixed(1) : 0} 支
+本周平均：${getWeekData().length > 0 ? (getWeekData().reduce((sum, d) => sum + d.count, 0) / getWeekData().length).toFixed(2) : 0} 支
 本月总计：${getMonthData().reduce((sum, d) => sum + d.count, 0)} 支
 
 【预测分析】
 明日预测：${predictTomorrow().count} 支
 置信度：${Math.round(predictTomorrow().confidence * 100)}%
 
-【身体破坏程度】
-肺部损伤：${appData.records.length > 0 ? '25%' : '0%'}
-心血管损伤：${appData.records.length > 0 ? '20%' : '0%'}
-味觉退化：${appData.records.length > 0 ? '30%' : '0%'}
-精力下降：${appData.records.length > 0 ? '35%' : '0%'}
+【身体恢复进度】
+肺部活力：${appData.records.length > 0 ? '30%' : '0%'}
+心血管健康：${appData.records.length > 0 ? '25%' : '0%'}
+味觉敏锐：${appData.records.length > 0 ? '35%' : '0%'}
+精力充沛：${appData.records.length > 0 ? '40%' : '0%'}
 
 =====================================
 数据文件生成完成 - 烟迹终结者
@@ -1536,6 +1644,12 @@ ${appData.records.map(record => {
 
         // 导出为Excel格式
         function exportToExcel() {
+            let totalExpense = 0;
+            appData.records.forEach(record => {
+                const expense = record.count * (appData.settings.packPrice / appData.settings.packSize);
+                totalExpense += expense;
+            });
+
             let excelContent = `<?xml version="1.0"?>
 <?mso-application progid="Excel.Sheet"?>
 <Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
@@ -1629,12 +1743,17 @@ ${appData.records.map(record => {
         </Row>
         <Row>
             <Cell><Data ss:Type="String">平均每日：</Data></Cell>
-            <Cell><Data ss:Type="Number">${appData.records.length > 0 ? (appData.records.reduce((sum, r) => sum + r.count, 0) / appData.records.length).toFixed(1) : 0}</Data></Cell>
+            <Cell><Data ss:Type="Number">${appData.records.length > 0 ? (appData.records.reduce((sum, r) => sum + r.count, 0) / appData.records.length).toFixed(2) : 0}</Data></Cell>
             <Cell><Data ss:Type="String">支</Data></Cell>
         </Row>
         <Row>
+            <Cell><Data ss:Type="String">总支出：</Data></Cell>
+            <Cell ss:StyleID="Currency"><Data ss:Type="Number">${totalExpense.toFixed(2)}</Data></Cell>
+            <Cell><Data ss:Type="String">元</Data></Cell>
+        </Row>
+        <Row>
             <Cell><Data ss:Type="String">本周平均：</Data></Cell>
-            <Cell><Data ss:Type="Number">${getWeekData().length > 0 ? (getWeekData().reduce((sum, d) => sum + d.count, 0) / getWeekData().length).toFixed(1) : 0}</Data></Cell>
+            <Cell><Data ss:Type="Number">${getWeekData().length > 0 ? (getWeekData().reduce((sum, d) => sum + d.count, 0) / getWeekData().length).toFixed(2) : 0}</Data></Cell>
             <Cell><Data ss:Type="String">支</Data></Cell>
         </Row>
         <Row>
@@ -1690,31 +1809,6 @@ ${appData.records.map(record => {
             link.download = `烟迹终结者数据_${new Date().toLocaleDateString().replace(/\//g, '-')}.xlsm`;
             link.click();
             URL.revokeObjectURL(url);
-        }
-
-        // 清除数据
-        function clearData() {
-            if (confirm('确定要清除所有数据吗？此操作不可恢复。')) {
-                appData = {
-                    records: [],
-                    settings: {
-                        habitYears: 0,
-                        packPrice: 0,
-                        packSize: 20
-                    }
-                };
-                saveData();
-                updateUI();
-                updateChart();
-                updateHealthProgress();
-                updatePrediction();
-                
-                document.getElementById('habit-years').value = '';
-                document.getElementById('pack-price').value = '';
-                document.getElementById('pack-size').value = '20';
-                
-                alert('数据已清除');
-            }
         }
 
         // 数据存储
