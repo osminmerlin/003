@@ -2,20 +2,20 @@
     "name": "烟迹终结者",
     "short_name": "烟迹终结者",
     "description": "记录习惯，发现生活的小确幸",
-    "start_url": "/",
+    "start_url": "./index.html",
     "display": "standalone",
     "background_color": "#F2F2F7",
     "theme_color": "#34C759",
     "orientation": "portrait",
     "icons": [
         {
-            "src": "icon-192.png",
+            "src": "./icon-192.png",
             "sizes": "192x192",
             "type": "image/png",
             "purpose": "any maskable"
         },
         {
-            "src": "icon-512.png",
+            "src": "./icon-512.png",
             "sizes": "512x512",
             "type": "image/png",
             "purpose": "any maskable"
@@ -23,5 +23,6 @@
     ],
     "categories": ["health", "lifestyle"],
     "lang": "zh-CN",
-    "dir": "ltr"
+    "dir": "ltr",
+    "scope": "./"
 }
