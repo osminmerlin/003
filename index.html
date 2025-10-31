@@ -33,6 +33,7 @@
             --border-color: #E5E5EA;
             --success-color: #30D158;
             --warning-color: #FF9500;
+            --encourage-color: #5856D6;
         }
         
         body {
@@ -208,6 +209,28 @@
             margin-bottom: 8px;
         }
         
+        /* 总支出显示 */
+        .total-expense {
+            background: linear-gradient(135deg, #FF3B30, #FF6B6B);
+            color: white;
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 16px;
+            text-align: center;
+            box-shadow: 0 4px 16px rgba(255, 59, 48, 0.3);
+        }
+        
+        .expense-amount {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .expense-label {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
         /* 健康恢复进度 */
         .health-item {
             display: flex;
@@ -247,6 +270,59 @@
             background: linear-gradient(90deg, var(--primary-green), #30D158);
             border-radius: 4px;
             transition: width 0.3s ease;
+        }
+        
+        /* 鼓励的话页面 */
+        .encourage-card {
+            background: linear-gradient(135deg, var(--encourage-color), #7A7AE0);
+            color: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+            text-align: center;
+            box-shadow: 0 4px 16px rgba(88, 86, 214, 0.3);
+        }
+        
+        .encourage-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+        
+        .encourage-text {
+            font-size: 18px;
+            font-weight: 500;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+        
+        .encourage-author {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        .encourage-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+        
+        .encourage-item {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+        
+        .encourage-item-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+        
+        .encourage-item-text {
+            font-size: 16px;
+            color: var(--text-primary);
+            font-weight: 500;
         }
         
         /* 设置表单 */
@@ -296,12 +372,13 @@
         .nav-item {
             flex: 1;
             text-align: center;
-            padding: 8px;
+            padding: 8px 4px;
             cursor: pointer;
             transition: all 0.3s ease;
             border: none;
             background: none;
             color: var(--text-secondary);
+            font-size: 11px;
         }
         
         .nav-item.active {
@@ -309,13 +386,14 @@
         }
         
         .nav-icon {
-            font-size: 24px;
+            font-size: 20px;
             display: block;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
         }
         
         .nav-label {
-            font-size: 12px;
+            font-size: 10px;
+            display: block;
         }
         
         /* 按钮样式 */
@@ -352,6 +430,18 @@
             
             .today-count {
                 font-size: 36px;
+            }
+            
+            .nav-item {
+                padding: 6px 2px;
+            }
+            
+            .nav-icon {
+                font-size: 18px;
+            }
+            
+            .nav-label {
+                font-size: 9px;
             }
         }
         
@@ -411,6 +501,11 @@
         
         <!-- 节省页面 -->
         <div class="page" id="saving-page">
+            <div class="total-expense">
+                <div class="expense-amount">¥<span id="total-expense">0</span></div>
+                <div class="expense-label">总共已支出</div>
+            </div>
+            
             <div class="card">
                 <div class="card-title">💰 累计节省</div>
                 <div style="text-align: center; padding: 20px;">
@@ -513,6 +608,42 @@
             </div>
         </div>
         
+        <!-- 鼓励的话页面 -->
+        <div class="page" id="encourage-page">
+            <div class="encourage-card">
+                <div class="encourage-icon" id="encourage-icon">✨</div>
+                <div class="encourage-text" id="encourage-text">
+                    每一次记录，都是对生活的认真态度
+                </div>
+                <div class="encourage-author" id="encourage-author">— 烟迹终结者</div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">🌟 今日金句</div>
+                <div class="encourage-grid" id="encourage-grid">
+                    <div class="encourage-item">
+                        <div class="encourage-item-icon">🌱</div>
+                        <div class="encourage-item-text">小改变，大不同</div>
+                    </div>
+                    <div class="encourage-item">
+                        <div class="encourage-item-icon">💪</div>
+                        <div class="encourage-item-text">坚持就是力量</div>
+                    </div>
+                    <div class="encourage-item">
+                        <div class="encourage-item-icon">🎯</div>
+                        <div class="encourage-item-text">每一步都算数</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">📊 今日数据鼓励</div>
+                <div id="data-encouragement" style="color: var(--text-secondary); text-align: center; padding: 20px;">
+                    继续记录，数据会告诉您更多故事
+                </div>
+            </div>
+        </div>
+        
         <!-- 设置页面 -->
         <div class="page" id="settings-page">
             <div class="card">
@@ -521,11 +652,6 @@
                 <div class="form-group">
                     <label class="form-label">习惯时长（年）</label>
                     <input type="number" class="form-input" id="habit-years" placeholder="例如：5" min="0" max="50">
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">每日数量（支）</label>
-                    <input type="number" class="form-input" id="daily-amount" placeholder="例如：15" min="1" max="100">
                 </div>
                 
                 <div class="form-group">
@@ -548,7 +674,7 @@
             </div>
             
             <div class="card" style="text-align: center; color: var(--text-secondary); font-size: 12px;">
-                <p>烟迹终结者 v1.0</p>
+                <p>烟迹终结者 v1.1</p>
                 <p>记录习惯，发现生活的小确幸</p>
             </div>
         </div>
@@ -568,6 +694,10 @@
             <span class="nav-icon">❤️</span>
             <span class="nav-label">恢复</span>
         </button>
+        <button class="nav-item" onclick="showPage('encourage-page')">
+            <span class="nav-icon">💫</span>
+            <span class="nav-label">鼓励</span>
+        </button>
         <button class="nav-item" onclick="showPage('settings-page')">
             <span class="nav-icon">⚙️</span>
             <span class="nav-label">设置</span>
@@ -581,10 +711,31 @@
             records: [],
             settings: {
                 habitYears: 0,
-                dailyAmount: 0,
                 packPrice: 0,
                 packSize: 20
             }
+        };
+        
+        // 鼓励话语库
+        const encourageLibrary = {
+            icons: ['✨', '🌟', '💫', '🎯', '🌈', '🔥', '💎', '🏆'],
+            mainEncouragements: [
+                { text: "每一次记录，都是对生活的认真态度", author: "烟迹终结者" },
+                { text: "数据不会说谎，它正在讲述您的故事", author: "烟迹终结者" },
+                { text: "小改变，正在积累成大不同", author: "烟迹终结者" },
+                { text: "您比昨天更了解自己", author: "烟迹终结者" },
+                { text: "坚持记录的人，终将收获惊喜", author: "烟迹终结者" }
+            ],
+            dailyQuotes: [
+                { icon: "🌱", text: "小改变，大不同" },
+                { icon: "💪", text: "坚持就是力量" },
+                { icon: "🎯", text: "每一步都算数" },
+                { icon: "🌟", text: "发现更好的自己" },
+                { icon: "🔥", text: "热情不减" },
+                { icon: "💎", text: "珍贵如你" },
+                { icon: "🌈", text: "彩虹总在风雨后" },
+                { icon: "🏆", text: "胜利属于坚持者" }
+            ]
         };
         
         // 初始化
@@ -593,6 +744,7 @@
             updateUI();
             initChart();
             updateHealthProgress();
+            updateEncouragement();
         });
         
         // 页面切换
@@ -612,6 +764,8 @@
                 updateSavingPage();
             } else if (pageId === 'recovery-page') {
                 updateHealthProgress();
+            } else if (pageId === 'encourage-page') {
+                updateEncouragement();
             }
         }
         
@@ -636,11 +790,81 @@
             updateUI();
             updateChart();
             updateHealthProgress();
+            updateEncouragement();
             
             // 触觉反馈
             if (navigator.vibrate) {
                 navigator.vibrate(50);
             }
+        }
+        
+        // 更新鼓励内容
+        function updateEncouragement() {
+            // 随机选择主鼓励语
+            const randomEncourage = encourageLibrary.mainEncouragements[
+                Math.floor(Math.random() * encourageLibrary.mainEncouragements.length)
+            ];
+            
+            document.getElementById('encourage-icon').textContent = 
+                encourageLibrary.icons[Math.floor(Math.random() * encourageLibrary.icons.length)];
+            document.getElementById('encourage-text').textContent = randomEncourage.text;
+            document.getElementById('encourage-author').textContent = `— ${randomEncourage.author}`;
+            
+            // 更新今日金句
+            const randomQuotes = encourageLibrary.dailyQuotes
+                .sort(() => 0.5 - Math.random())
+                .slice(0, 3);
+            
+            const quotesHtml = randomQuotes.map(quote => `
+                <div class="encourage-item">
+                    <div class="encourage-item-icon">${quote.icon}</div>
+                    <div class="encourage-item-text">${quote.text}</div>
+                </div>
+            `).join('');
+            
+            document.getElementById('encourage-grid').innerHTML = quotesHtml;
+            
+            // 更新数据鼓励
+            updateDataEncouragement();
+        }
+        
+        // 更新数据鼓励
+        function updateDataEncouragement() {
+            const today = new Date().toDateString();
+            const todayRecord = appData.records.find(r => r.date === today);
+            const todayCount = todayRecord ? todayRecord.count : 0;
+            
+            const weekData = getWeekData();
+            const weekAvg = weekData.length > 0 ? Math.round(weekData.reduce((sum, d) => sum + d.count, 0) / weekData.length) : 0;
+            
+            let encouragementText = '';
+            
+            if (todayCount === 0 && weekAvg === 0) {
+                encouragementText = '<div style="color: var(--text-secondary);">开始记录，让数据给您惊喜</div>';
+            } else if (todayCount < weekAvg) {
+                encouragementText = `
+                    <div style="color: var(--primary-green);">
+                        🎉 今日表现不错！<br>
+                        <small style="color: var(--text-secondary);">继续保持这个节奏</small>
+                    </div>
+                `;
+            } else if (todayCount > weekAvg) {
+                encouragementText = `
+                    <div style="color: var(--warning-color);">
+                        💡 今日记录较多<br>
+                        <small style="color: var(--text-secondary);">明天又是新的一天</small>
+                    </div>
+                `;
+            } else {
+                encouragementText = `
+                    <div style="color: var(--encourage-color);">
+                        🌟 保持稳定状态<br>
+                        <small style="color: var(--text-secondary);">稳定也是一种进步</small>
+                    </div>
+                `;
+            }
+            
+            document.getElementById('data-encouragement').innerHTML = encouragementText;
         }
         
         // 更新UI
@@ -736,11 +960,12 @@
                         backgroundColor: 'rgba(52, 199, 89, 0.1)',
                         borderWidth: 3,
                         fill: true,
-                        tension: 0.4,
+                        tension: 0.6, // 平滑曲线
                         pointBackgroundColor: '#34C759',
                         pointBorderColor: '#fff',
                         pointBorderWidth: 2,
-                        pointRadius: 6
+                        pointRadius: 6,
+                        cubicInterpolationMode: 'monotone' // 平滑插值
                     }]
                 },
                 options: {
@@ -762,6 +987,11 @@
                             grid: {
                                 display: false
                             }
+                        }
+                    },
+                    elements: {
+                        line: {
+                            borderJoinStyle: 'round'
                         }
                     }
                 }
@@ -789,7 +1019,8 @@
         
         // 更新节省页面
         function updateSavingPage() {
-            if (appData.settings.dailyAmount === 0 || appData.settings.packPrice === 0) {
+            if (appData.settings.packPrice === 0) {
+                document.getElementById('total-expense').textContent = '0';
                 document.getElementById('total-saving').textContent = '0';
                 document.getElementById('saving-comparison').innerHTML = `
                     <div class="comparison-item">
@@ -804,36 +1035,35 @@
             const todayRecord = appData.records.find(r => r.date === today);
             const todayCount = todayRecord ? todayRecord.count : 0;
             
-            const expected = appData.settings.dailyAmount;
-            const savedToday = expected - todayCount;
-            const pricePerCigarette = appData.settings.packPrice / appData.settings.packSize;
-            const moneySavedToday = Math.max(0, savedToday * pricePerCigarette);
-            
-            // 计算总节省
-            let totalSaved = 0;
+            // 计算总支出
+            let totalExpense = 0;
             appData.records.forEach(record => {
-                const saved = expected - record.count;
-                if (saved > 0) {
-                    totalSaved += saved * pricePerCigarette;
-                }
+                const expense = record.count * (appData.settings.packPrice / appData.settings.packSize);
+                totalExpense += expense;
             });
             
-            document.getElementById('total-saving').textContent = Math.round(totalSaved);
+            document.getElementById('total-expense').textContent = Math.round(totalExpense);
+            
+            // 计算节省（基于历史平均值）
+            const allDays = Math.ceil((new Date() - new Date(appData.records[0]?.date || new Date())) / (1000 * 60 * 60 * 24)) || 1;
+            const avgPerDay = appData.records.reduce((sum, r) => sum + r.count, 0) / appData.records.length || 0;
+            const expectedTotal = avgPerDay * allDays;
+            const actualTotal = appData.records.reduce((sum, r) => sum + r.count, 0);
+            const savedCount = Math.max(0, expectedTotal - actualTotal);
+            const moneySaved = savedCount * (appData.settings.packPrice / appData.settings.packSize);
+            
+            document.getElementById('total-saving').textContent = Math.round(moneySaved);
             
             // 更新对比项目
             const coffeePrice = 25;
             const pizzaPrice = 80;
             const moviePrice = 50;
             const gamePrice = 300;
-            const phonePrice = 100;
-            const gymPrice = 200;
             
-            const coffeeCount = Math.floor(totalSaved / coffeePrice);
-            const pizzaCount = Math.floor(totalSaved / pizzaPrice);
-            const movieCount = Math.floor(totalSaved / moviePrice);
-            const gameCount = Math.floor(totalSaved / gamePrice);
-            const phoneMonths = Math.floor(totalSaved / phonePrice);
-            const gymMonths = Math.floor(totalSaved / gymPrice);
+            const coffeeCount = Math.floor(moneySaved / coffeePrice);
+            const pizzaCount = Math.floor(moneySaved / pizzaPrice);
+            const movieCount = Math.floor(moneySaved / moviePrice);
+            const gameCount = Math.floor(moneySaved / gamePrice);
             
             document.getElementById('saving-comparison').innerHTML = `
                 <div class="comparison-item">
@@ -852,34 +1082,21 @@
                     <div class="comparison-icon">🎮</div>
                     <div>${gameCount}个游戏</div>
                 </div>
-                <div class="comparison-item">
-                    <div class="comparison-icon">📱</div>
-                    <div>${phoneMonths}个月话费</div>
-                </div>
-                <div class="comparison-item">
-                    <div class="comparison-icon">🏃‍♂️</div>
-                    <div>${gymMonths}个月健身</div>
-                </div>
             `;
             
             // 时间维度
-            const weekSaved = moneySavedToday * 7;
-            const monthSaved = moneySavedToday * 30;
-            const yearSaved = moneySavedToday * 365;
+            const weekSaving = moneySaved / Math.max(1, Math.ceil(allDays / 7));
+            const monthSaving = moneySaved / Math.max(1, Math.ceil(allDays / 30));
             
             document.getElementById('time-dimension').innerHTML = `
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; text-align: center;">
                     <div style="background: var(--card-bg); padding: 12px; border-radius: 8px;">
-                        <div style="font-size: 18px; font-weight: 600; color: var(--primary-green);">¥${Math.round(weekSaved)}</div>
-                        <div style="font-size: 12px; color: var(--text-secondary);">一周节省</div>
+                        <div style="font-size: 18px; font-weight: 600; color: var(--primary-green);">¥${Math.round(weekSaving)}</div>
+                        <div style="font-size: 12px; color: var(--text-secondary);">周均节省</div>
                     </div>
                     <div style="background: var(--card-bg); padding: 12px; border-radius: 8px;">
-                        <div style="font-size: 18px; font-weight: 600; color: var(--primary-green);">¥${Math.round(monthSaved)}</div>
-                        <div style="font-size: 12px; color: var(--text-secondary);">一月节省</div>
-                    </div>
-                    <div style="background: var(--card-bg); padding: 12px; border-radius: 8px; grid-column: 1 / -1;">
-                        <div style="font-size: 24px; font-weight: 600; color: var(--primary-green);">¥${Math.round(yearSaved)}</div>
-                        <div style="font-size: 14px; color: var(--text-secondary);">一年可节省</div>
+                        <div style="font-size: 18px; font-weight: 600; color: var(--primary-green);">¥${Math.round(monthSaving)}</div>
+                        <div style="font-size: 12px; color: var(--text-secondary);">月均节省</div>
                     </div>
                 </div>
             `;
@@ -891,8 +1108,14 @@
             const todayRecord = appData.records.find(r => r.date === today);
             const todayCount = todayRecord ? todayRecord.count : 0;
             
-            const expected = appData.settings.dailyAmount;
-            const reductionRate = expected > 0 ? Math.max(0, (expected - todayCount) / expected) : 0;
+            // 基于历史数据计算改善程度
+            const weekData = getWeekData();
+            const avgWeekCount = weekData.length > 0 ? weekData.reduce((sum, d) => sum + d.count, 0) / weekData.length : 0;
+            
+            let improvementRate = 0;
+            if (avgWeekCount > 0) {
+                improvementRate = Math.max(0, (avgWeekCount - todayCount) / avgWeekCount);
+            }
             
             // 更新各项健康指标
             const healthItems = [
@@ -903,7 +1126,7 @@
             ];
             
             healthItems.forEach(item => {
-                const progress = Math.min(100, item.baseProgress + (reductionRate * 60));
+                const progress = Math.min(100, item.baseProgress + (improvementRate * 50));
                 const progressBar = document.querySelector(`[data-target="${item.name}"]`);
                 const percentElement = progressBar.closest('.health-item').querySelector('.health-percent');
                 
@@ -915,7 +1138,6 @@
         // 保存设置
         function saveSettings() {
             appData.settings.habitYears = parseInt(document.getElementById('habit-years').value) || 0;
-            appData.settings.dailyAmount = parseInt(document.getElementById('daily-amount').value) || 0;
             appData.settings.packPrice = parseInt(document.getElementById('pack-price').value) || 0;
             appData.settings.packSize = parseInt(document.getElementById('pack-size').value) || 20;
             
@@ -949,7 +1171,6 @@
                 
                 // 填充设置表单
                 document.getElementById('habit-years').value = appData.settings.habitYears || '';
-                document.getElementById('daily-amount').value = appData.settings.dailyAmount || '';
                 document.getElementById('pack-price').value = appData.settings.packPrice || '';
                 document.getElementById('pack-size').value = appData.settings.packSize || 20;
             }
@@ -974,7 +1195,6 @@
                     records: [],
                     settings: {
                         habitYears: 0,
-                        dailyAmount: 0,
                         packPrice: 0,
                         packSize: 20
                     }
@@ -986,7 +1206,6 @@
                 
                 // 清空表单
                 document.getElementById('habit-years').value = '';
-                document.getElementById('daily-amount').value = '';
                 document.getElementById('pack-price').value = '';
                 document.getElementById('pack-size').value = '20';
                 
