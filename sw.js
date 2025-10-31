@@ -1,6 +1,5 @@
-const CACHE_NAME = 'smoke-tracker-v1.3';
+const CACHE_NAME = 'smoke-tracker-stable-v1';
 const urlsToCache = [
-    './',
     './index.html',
     './manifest.json',
     './icon-192.png',
@@ -34,24 +33,16 @@ self.addEventListener('activate', function(event) {
     );
 });
 
-// 拦截请求 - 修复404问题
+// 拦截请求
 self.addEventListener('fetch', function(event) {
     event.respondWith(
         caches.match(event.request)
             .then(function(response) {
-                // 缓存命中，返回响应
                 if (response) {
                     return response;
                 }
                 
-                // 处理主屏幕图标打开的根路径请求
-                if (event.request.url.endsWith('/') || event.request.url.endsWith('/index.html')) {
-                    return caches.match('./index.html');
-                }
-                
-                // 处理其他请求
                 return fetch(event.request).catch(function() {
-                    // 网络失败时返回缓存的index.html
                     return caches.match('./index.html');
                 });
             })
