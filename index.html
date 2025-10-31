@@ -35,6 +35,7 @@
             --warning-color: #FF9500;
             --encourage-color: #5856D6;
             --prediction-color: #AF52DE;
+            --damage-color: #FF3B30;
         }
         
         body {
@@ -216,31 +217,32 @@
             position: relative;
         }
         
-        /* 节省对比 */
-        .saving-comparison {
+        /* 宅男好物对比 */
+        .geek-comparison {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
             gap: 12px;
             margin-top: 16px;
         }
         
-        .comparison-item {
-            background: linear-gradient(135deg, var(--secondary-orange), #FFB84D);
+        .geek-item {
+            background: linear-gradient(135deg, #007AFF, #5856D6);
             color: white;
             padding: 16px;
             border-radius: 12px;
             text-align: center;
-            font-size: 14px;
+            font-size: 13px;
+            box-shadow: 0 4px 16px rgba(0, 122, 255, 0.3);
         }
         
-        .comparison-icon {
+        .geek-icon {
             font-size: 24px;
             margin-bottom: 8px;
         }
         
         /* 总支出显示 */
         .total-expense {
-            background: linear-gradient(135deg, #FF3B30, #FF6B6B);
+            background: linear-gradient(135deg, var(--damage-color), #FF6B6B);
             color: white;
             padding: 20px;
             border-radius: 16px;
@@ -260,30 +262,8 @@
             opacity: 0.9;
         }
         
-        /* 预测节省显示 */
-        .prediction-saving {
-            background: linear-gradient(135deg, var(--prediction-color), #BF64E8);
-            color: white;
-            padding: 20px;
-            border-radius: 16px;
-            margin-bottom: 16px;
-            text-align: center;
-            box-shadow: 0 4px 16px rgba(175, 82, 222, 0.3);
-        }
-        
-        .saving-amount {
-            font-size: 36px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-        
-        .saving-label {
-            font-size: 16px;
-            opacity: 0.9;
-        }
-        
-        /* 健康恢复进度 */
-        .health-item {
+        /* 身体破坏进度 */
+        .damage-item {
             display: flex;
             align-items: center;
             margin-bottom: 16px;
@@ -293,37 +273,89 @@
             border: 1px solid var(--border-color);
         }
         
-        .health-icon {
+        .damage-icon {
             font-size: 24px;
             margin-right: 12px;
             width: 40px;
             text-align: center;
         }
         
-        .health-info {
+        .damage-info {
             flex: 1;
         }
         
-        .health-name {
+        .damage-name {
             font-weight: 500;
             margin-bottom: 4px;
+            color: var(--damage-color);
         }
         
-        .health-progress {
+        .damage-progress {
             background: var(--border-color);
             height: 8px;
             border-radius: 4px;
             overflow: hidden;
         }
         
-        .health-progress-bar {
+        .damage-progress-bar {
             height: 100%;
-            background: linear-gradient(90deg, var(--primary-green), #30D158);
+            background: linear-gradient(90deg, var(--damage-color), #FF6B6B);
             border-radius: 4px;
             transition: width 0.3s ease;
         }
         
-        /* 鼓励的话页面 */
+        .damage-percent {
+            font-size: 14px;
+            color: var(--damage-color);
+            font-weight: 500;
+        }
+        
+        /* 详细破坏时间轴 */
+        .damage-timeline {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            border-left: 4px solid var(--damage-color);
+        }
+        
+        .timeline-item {
+            position: relative;
+            padding-left: 30px;
+            margin-bottom: 20px;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -8px;
+            top: 6px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--damage-color);
+        }
+        
+        .timeline-time {
+            font-weight: 600;
+            color: var(--damage-color);
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+        
+        .timeline-desc {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .timeline-impact {
+            color: var(--text-primary);
+            font-size: 13px;
+            margin-top: 4px;
+            font-weight: 500;
+        }
+        
+        /* 丰富鼓励内容 */
         .encourage-card {
             background: linear-gradient(135deg, var(--encourage-color), #7A7AE0);
             color: white;
@@ -351,29 +383,39 @@
             opacity: 0.8;
         }
         
-        .encourage-grid {
+        .encourage-categories {
             display: grid;
             grid-template-columns: 1fr;
             gap: 16px;
+            margin-bottom: 20px;
         }
         
-        .encourage-item {
+        .encourage-category {
             background: var(--card-bg);
             padding: 20px;
             border-radius: 16px;
             border: 1px solid var(--border-color);
-            text-align: center;
         }
         
-        .encourage-item-icon {
-            font-size: 32px;
-            margin-bottom: 12px;
-        }
-        
-        .encourage-item-text {
+        .category-title {
             font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--encourage-color);
+        }
+        
+        .category-quotes {
+            display: grid;
+            gap: 8px;
+        }
+        
+        .category-quote {
+            padding: 12px;
+            background: var(--background);
+            border-radius: 8px;
+            font-size: 14px;
             color: var(--text-primary);
-            font-weight: 500;
+            border-left: 3px solid var(--encourage-color);
         }
         
         /* 设置表单 */
@@ -521,6 +563,10 @@
             .nav-label {
                 font-size: 8px;
             }
+            
+            .geek-comparison {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
         
         /* 深色模式支持 */
@@ -551,13 +597,6 @@
                 <div class="today-label">今日记录</div>
             </div>
             
-            <!-- 明日预测 -->
-            <div class="prediction-card">
-                <div class="prediction-title">🔮 明日预测</div>
-                <div class="prediction-value" id="prediction-value">--</div>
-                <div class="prediction-desc">基于您的历史记录分析</div>
-            </div>
-            
             <div class="stat-grid">
                 <div class="stat-item">
                     <div class="stat-value" id="week-avg">0</div>
@@ -576,6 +615,13 @@
                 </div>
             </div>
             
+            <!-- 明日预测移到趋势图下方 -->
+            <div class="prediction-card">
+                <div class="prediction-title">🔮 明日预测</div>
+                <div class="prediction-value" id="prediction-value">--</div>
+                <div class="prediction-desc">基于您的历史记录分析</div>
+            </div>
+            
             <div class="card">
                 <div class="card-title">📈 对比分析</div>
                 <div id="comparison-text" style="color: var(--text-secondary); text-align: center; padding: 20px;">
@@ -591,29 +637,40 @@
                 <div class="expense-label">总共已支出</div>
             </div>
             
-            <div class="prediction-saving">
-                <div class="saving-amount">¥<span id="prediction-saving">0</span></div>
-                <div class="saving-label">相比预测节省</div>
-            </div>
-            
             <div class="card">
-                <div class="card-title">🎯 这些钱原来可以</div>
-                <div class="saving-comparison" id="saving-comparison">
-                    <div class="comparison-item">
-                        <div class="comparison-icon">☕</div>
-                        <div>0杯咖啡</div>
+                <div class="card-title">💰 这些钱原来可以</div>
+                <div class="geek-comparison" id="geek-comparison">
+                    <div class="geek-item">
+                        <div class="geek-icon">🎮</div>
+                        <div>0个3A游戏</div>
                     </div>
-                    <div class="comparison-item">
-                        <div class="comparison-icon">🍕</div>
-                        <div>0顿披萨</div>
+                    <div class="geek-item">
+                        <div class="geek-icon">📱</div>
+                        <div>0部iPhone</div>
                     </div>
-                    <div class="comparison-item">
-                        <div class="comparison-icon">🎬</div>
-                        <div>0场电影</div>
+                    <div class="geek-item">
+                        <div class="geek-icon">💻</div>
+                        <div>0台MacBook</div>
                     </div>
-                    <div class="comparison-item">
-                        <div class="comparison-icon">🎮</div>
-                        <div>0个游戏</div>
+                    <div class="geek-item">
+                        <div class="geek-icon">🎧</div>
+                        <div>0副AirPods</div>
+                    </div>
+                    <div class="geek-item">
+                        <div class="geek-icon">⌚</div>
+                        <div>0块Apple Watch</div>
+                    </div>
+                    <div class="geek-item">
+                        <div class="geek-icon">🖱️</div>
+                        <div>0个电竞鼠标</div>
+                    </div>
+                    <div class="geek-item">
+                        <div class="geek-icon">⌨️</div>
+                        <div>0把机械键盘</div>
+                    </div>
+                    <div class="geek-item">
+                        <div class="geek-icon">🖥️</div>
+                        <div>0台显示器</div>
                     </div>
                 </div>
             </div>
@@ -626,69 +683,111 @@
             </div>
         </div>
         
-        <!-- 恢复页面 -->
+        <!-- 恢复页面 - 改为身体破坏 -->
         <div class="page" id="recovery-page">
             <div class="card">
-                <div class="card-title">❤️ 身体恢复进度</div>
+                <div class="card-title">⚠️ 身体破坏程度</div>
                 
-                <div class="health-item">
-                    <div class="health-icon">🫁</div>
-                    <div class="health-info">
-                        <div class="health-name">肺部功能</div>
-                        <div class="health-progress">
-                            <div class="health-progress-bar" style="width: 0%" data-target="lung"></div>
+                <div class="damage-item">
+                    <div class="damage-icon">🫁</div>
+                    <div class="damage-info">
+                        <div class="damage-name">肺部损伤</div>
+                        <div class="damage-progress">
+                            <div class="damage-progress-bar" style="width: 0%" data-target="lung"></div>
                         </div>
                     </div>
-                    <div class="health-percent">0%</div>
+                    <div class="damage-percent">0%</div>
                 </div>
                 
-                <div class="health-item">
-                    <div class="health-icon">❤️</div>
-                    <div class="health-info">
-                        <div class="health-name">心血管</div>
-                        <div class="health-progress">
-                            <div class="health-progress-bar" style="width: 0%" data-target="heart"></div>
+                <div class="damage-item">
+                    <div class="damage-icon">❤️</div>
+                    <div class="damage-info">
+                        <div class="damage-name">心血管损伤</div>
+                        <div class="damage-progress">
+                            <div class="damage-progress-bar" style="width: 0%" data-target="heart"></div>
                         </div>
                     </div>
-                    <div class="health-percent">0%</div>
+                    <div class="damage-percent">0%</div>
                 </div>
                 
-                <div class="health-item">
-                    <div class="health-icon">👅</div>
-                    <div class="health-info">
-                        <div class="health-name">味觉嗅觉</div>
-                        <div class="health-progress">
-                            <div class="health-progress-bar" style="width: 0%" data-target="taste"></div>
+                <div class="damage-item">
+                    <div class="damage-icon">👅</div>
+                    <div class="damage-info">
+                        <div class="damage-name">味觉退化</div>
+                        <div class="damage-progress">
+                            <div class="damage-progress-bar" style="width: 0%" data-target="taste"></div>
                         </div>
                     </div>
-                    <div class="health-percent">0%</div>
+                    <div class="damage-percent">0%</div>
                 </div>
                 
-                <div class="health-item">
-                    <div class="health-icon">⚡</div>
-                    <div class="health-info">
-                        <div class="health-name">精力充沛</div>
-                        <div class="health-progress">
-                            <div class="health-progress-bar" style="width: 0%" data-target="energy"></div>
+                <div class="damage-item">
+                    <div class="damage-icon">⚡</div>
+                    <div class="damage-info">
+                        <div class="damage-name">精力下降</div>
+                        <div class="damage-progress">
+                            <div class="damage-progress-bar" style="width: 0%" data-target="energy"></div>
                         </div>
                     </div>
-                    <div class="health-percent">0%</div>
+                    <div class="damage-percent">0%</div>
                 </div>
             </div>
             
-            <div class="card">
-                <div class="card-title">⏰ 恢复时间轴</div>
-                <div id="recovery-timeline" style="color: var(--text-secondary); font-size: 14px; line-height: 1.8;">
-                    <div>🕐 1小时后：心率开始下降</div>
-                    <div>🕕 8小时后：血液含氧量改善</div>
-                    <div>🕐 24小时后：肺部开始清洁</div>
-                    <div>📅 1周后：味觉嗅觉提升</div>
-                    <div>📅 1个月后：皮肤状态改善</div>
+            <!-- 详细破坏时间轴 -->
+            <div class="damage-timeline">
+                <div class="card-title">⏰ 身体破坏时间轴</div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-time">🚬 点燃瞬间</div>
+                    <div class="timeline-desc">尼古丁7秒到达大脑，心率立即上升10-15次/分钟</div>
+                    <div class="timeline-impact">⚡ 即时影响：血压升高，血管收缩</div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-time">🕐 1小时后</div>
+                    <div class="timeline-desc">血液中的一氧化碳浓度达到峰值，氧气输送能力下降</div>
+                    <div class="timeline-impact">🫁 肺部影响：肺泡开始发炎，氧气交换效率下降</div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-time">🕕 8小时后</div>
+                    <div class="timeline-desc">血液中氧气含量持续偏低，细胞开始缺氧</div>
+                    <div class="timeline-impact">💔 心脏负担：心肌缺氧，心脏病风险增加</div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-time">🕐 24小时后</div>
+                    <div class="timeline-desc">支气管开始痉挛，肺部清洁功能下降30%</div>
+                    <div class="timeline-impact">🤧 呼吸系统：痰液增多，咳嗽反射减弱</div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-time">📅 1周后</div>
+                    <div class="timeline-desc">味觉细胞开始萎缩，味蕾数量减少25%</div>
+                    <div class="timeline-impact">👅 感官退化：味觉迟钝，食欲下降</div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-time">📅 1个月后</div>
+                    <div class="timeline-desc">皮肤胶原蛋白流失加速，皱纹增加，面色暗黄</div>
+                    <div class="timeline-impact">🌟 外貌变化：皮肤老化，牙齿变黄，口臭加重</div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-time">📅 1年后</div>
+                    <div class="timeline-desc">肺部纤毛基本丧失功能，肺癌风险增加10倍</div>
+                    <div class="timeline-impact">🫁 严重损伤：肺功能下降50%，癌症风险激增</div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-time">⚠️ 长期影响</div>
+                    <div class="timeline-desc">心血管疾病风险增加200%，预期寿命减少10年</div>
+                    <div class="timeline-impact">💀 生命威胁：心梗、中风、癌症风险大幅上升</div>
                 </div>
             </div>
         </div>
         
-        <!-- 鼓励的话页面 -->
+        <!-- 鼓励页面 - 更丰富内容 -->
         <div class="page" id="encourage-page">
             <div class="encourage-card">
                 <div class="encourage-icon" id="encourage-icon">✨</div>
@@ -698,28 +797,45 @@
                 <div class="encourage-author" id="encourage-author">— 烟迹终结者</div>
             </div>
             
-            <div class="card">
-                <div class="card-title">🌟 今日金句</div>
-                <div class="encourage-grid" id="encourage-grid">
-                    <div class="encourage-item">
-                        <div class="encourage-item-icon">🌱</div>
-                        <div class="encourage-item-text">小改变，大不同</div>
-                    </div>
-                    <div class="encourage-item">
-                        <div class="encourage-item-icon">💪</div>
-                        <div class="encourage-item-text">坚持就是力量</div>
-                    </div>
-                    <div class="encourage-item">
-                        <div class="encourage-item-icon">🎯</div>
-                        <div class="encourage-item-text">每一步都算数</div>
+            <div class="encourage-categories">
+                <div class="encourage-category">
+                    <div class="category-title">💪 力量与坚持</div>
+                    <div class="category-quotes">
+                        <div class="category-quote">真正的强者，不是没有眼泪的人，而是含着眼泪依然奔跑的人</div>
+                        <div class="category-quote">每一次想要放弃的时候，就想想为什么开始</div>
+                        <div class="category-quote">坚持不是为了证明给谁看，而是为了不辜负自己</div>
+                        <div class="category-quote">你的潜力远比你想象的要大得多</div>
                     </div>
                 </div>
-            </div>
-            
-            <div class="card">
-                <div class="card-title">📊 今日数据鼓励</div>
-                <div id="data-encouragement" style="color: var(--text-secondary); text-align: center; padding: 20px;">
-                    继续记录，数据会告诉您更多故事
+                
+                <div class="encourage-category">
+                    <div class="category-title">🌱 成长与改变</div>
+                    <div class="category-quotes">
+                        <div class="category-quote">改变不是为了变得更好，而是为了成为真正的自己</div>
+                        <div class="category-quote">成长的过程总是痛苦的，但结果总是美好的</div>
+                        <div class="category-quote">今天的你比昨天更强大，这就是进步</div>
+                        <div class="category-quote">小步前进也是前进，不要小看自己的力量</div>
+                    </div>
+                </div>
+                
+                <div class="encourage-category">
+                    <div class="category-title">🎯 目标与专注</div>
+                    <div class="category-quotes">
+                        <div class="category-quote">专注当下，未来自然明朗</div>
+                        <div class="category-quote">目标不是用来达成的，而是用来指引方向的</div>
+                        <div class="category-quote">每一个小目标的实现，都是通往大目标的阶梯</div>
+                        <div class="category-quote">成功不是终点，失败也不是终结，唯有勇气才是永恒</div>
+                    </div>
+                </div>
+                
+                <div class="encourage-category">
+                    <div class="category-title">🌟 希望与未来</div>
+                    <div class="category-quotes">
+                        <div class="category-quote">明天的太阳依旧会升起，带着希望出发</div>
+                        <div class="category-quote">你值得拥有更好的生活，更好的健康，更好的自己</div>
+                        <div class="category-quote">每一个结束都是新的开始，每一个困难都是成长的机会</div>
+                        <div class="category-quote">相信自己，你正在创造属于自己的奇迹</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -766,7 +882,7 @@
             </div>
             
             <div class="card" style="text-align: center; color: var(--text-secondary); font-size: 12px;">
-                <p>烟迹终结者 v1.2</p>
+                <p>烟迹终结者 v1.3</p>
                 <p>记录习惯，发现生活的小确幸</p>
             </div>
         </div>
@@ -783,8 +899,8 @@
             <span class="nav-label">节省</span>
         </button>
         <button class="nav-item" onclick="showPage('recovery-page')">
-            <span class="nav-icon">❤️</span>
-            <span class="nav-label">恢复</span>
+            <span class="nav-icon">⚠️</span>
+            <span class="nav-label">破坏</span>
         </button>
         <button class="nav-item" onclick="showPage('encourage-page')">
             <span class="nav-icon">💫</span>
@@ -811,7 +927,23 @@
         // 导出格式
         let exportFormat = 'txt';
         
-        // 鼓励话语库
+        // 宅男好物库
+        const geekItems = [
+            { icon: '🎮', name: '3A游戏', price: 300, desc: '个' },
+            { icon: '📱', name: 'iPhone', price: 8000, desc: '部' },
+            { icon: '💻', name: 'MacBook', price: 12000, desc: '台' },
+            { icon: '🎧', name: 'AirPods', price: 1500, desc: '副' },
+            { icon: '⌚', name: 'Apple Watch', price: 3000, desc: '块' },
+            { icon: '🖱️', name: '电竞鼠标', price: 500, desc: '个' },
+            { icon: '⌨️', name: '机械键盘', price: 800, desc: '把' },
+            { icon: '🖥️', name: '显示器', price: 2500, desc: '台' },
+            { icon: '🎮', name: 'Switch', price: 2000, desc: '台' },
+            { icon: '📱', name: 'iPad', price: 4000, desc: '台' },
+            { icon: '💾', name: 'SSD硬盘', price: 800, desc: '块' },
+            { icon: '🎧', name: '游戏耳机', price: 600, desc: '副' }
+        ];
+        
+        // 丰富鼓励内容库
         const encourageLibrary = {
             icons: ['✨', '🌟', '💫', '🎯', '🌈', '🔥', '💎', '🏆'],
             mainEncouragements: [
@@ -821,16 +953,36 @@
                 { text: "您比昨天更了解自己", author: "烟迹终结者" },
                 { text: "坚持记录的人，终将收获惊喜", author: "烟迹终结者" }
             ],
-            dailyQuotes: [
-                { icon: "🌱", text: "小改变，大不同" },
-                { icon: "💪", text: "坚持就是力量" },
-                { icon: "🎯", text: "每一步都算数" },
-                { icon: "🌟", text: "发现更好的自己" },
-                { icon: "🔥", text: "热情不减" },
-                { icon: "💎", text: "珍贵如你" },
-                { icon: "🌈", text: "彩虹总在风雨后" },
-                { icon: "🏆", text: "胜利属于坚持者" }
-            ]
+            categories: {
+                strength: [
+                    "真正的强者，不是没有眼泪的人，而是含着眼泪依然奔跑的人",
+                    "每一次想要放弃的时候，就想想为什么开始",
+                    "坚持不是为了证明给谁看，而是为了不辜负自己",
+                    "你的潜力远比你想象的要大得多",
+                    "当你觉得坚持不下去的时候，正是成长最快的时候"
+                ],
+                growth: [
+                    "改变不是为了变得更好，而是为了成为真正的自己",
+                    "成长的过程总是痛苦的，但结果总是美好的",
+                    "今天的你比昨天更强大，这就是进步",
+                    "小步前进也是前进，不要小看自己的力量",
+                    "每一个困难都是成长的机会，每一次挑战都是进步的阶梯"
+                ],
+                focus: [
+                    "专注当下，未来自然明朗",
+                    "目标不是用来达成的，而是用来指引方向的",
+                    "每一个小目标的实现，都是通往大目标的阶梯",
+                    "成功不是终点，失败也不是终结，唯有勇气才是永恒",
+                    "把注意力放在过程上，结果自然会好"
+                ],
+                hope: [
+                    "明天的太阳依旧会升起，带着希望出发",
+                    "你值得拥有更好的生活，更好的健康，更好的自己",
+                    "每一个结束都是新的开始，每一个困难都是成长的机会",
+                    "相信自己，你正在创造属于自己的奇迹",
+                    "希望不是看到未来，而是相信未来"
+                ]
+            }
         };
         
         // 初始化
@@ -920,7 +1072,7 @@
                     let weightedSum = 0;
                     let weightSum = 0;
                     recentDays.forEach((day, index) => {
-                        const weight = index + 1; // 越近期权重越高
+                        const weight = index + 1;
                         weightedSum += day.count * weight;
                         weightSum += weight;
                     });
@@ -987,27 +1139,11 @@
                 
                 const record = appData.records.find(r => r.date === dateStr);
                 if (record) {
-                    result.unshift(record); // 添加到开头，保持时间顺序
+                    result.unshift(record);
                 }
             }
             
             return result;
-        }
-        
-        // 更新预测
-        function updatePrediction() {
-            const prediction = predictTomorrow();
-            const predictionElement = document.getElementById('prediction-value');
-            const predictionDesc = document.querySelector('.prediction-desc');
-            
-            if (prediction.count === '--') {
-                predictionElement.textContent = '--';
-                predictionDesc.textContent = '需要更多数据进行分析';
-            } else {
-                predictionElement.textContent = `${prediction.count} 支`;
-                const confidencePercent = Math.round(prediction.confidence * 100);
-                predictionDesc.textContent = `置信度 ${confidencePercent}%`;
-            }
         }
         
         // 更新鼓励内容
@@ -1022,19 +1158,32 @@
             document.getElementById('encourage-text').textContent = randomEncourage.text;
             document.getElementById('encourage-author').textContent = `— ${randomEncourage.author}`;
             
-            // 更新今日金句
-            const randomQuotes = encourageLibrary.dailyQuotes
-                .sort(() => 0.5 - Math.random())
-                .slice(0, 3);
+            // 更新分类鼓励内容
+            const categories = ['strength', 'growth', 'focus', 'hope'];
+            const encourageHtml = categories.map(category => {
+                const quotes = encourageLibrary.categories[category];
+                const categoryNames = {
+                    strength: '力量与坚持',
+                    growth: '成长与改变',
+                    focus: '目标与专注',
+                    hope: '希望与未来'
+                };
+                
+                const randomQuotes = quotes.sort(() => 0.5 - Math.random()).slice(0, 3);
+                
+                return `
+                    <div class="encourage-category">
+                        <div class="category-title">${categoryNames[category]}</div>
+                        <div class="category-quotes">
+                            ${randomQuotes.map(quote => `
+                                <div class="category-quote">${quote}</div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
             
-            const quotesHtml = randomQuotes.map(quote => `
-                <div class="encourage-item">
-                    <div class="encourage-item-icon">${quote.icon}</div>
-                    <div class="encourage-item-text">${quote.text}</div>
-                </div>
-            `).join('');
-            
-            document.getElementById('encourage-grid').innerHTML = quotesHtml;
+            document.querySelector('.encourage-categories').innerHTML = encourageHtml;
             
             // 更新数据鼓励
             updateDataEncouragement();
@@ -1233,10 +1382,9 @@
         function updateSavingPage() {
             if (appData.settings.packPrice === 0) {
                 document.getElementById('total-expense').textContent = '0';
-                document.getElementById('prediction-saving').textContent = '0';
-                document.getElementById('saving-comparison').innerHTML = `
-                    <div class="comparison-item">
-                        <div class="comparison-icon">⚙️</div>
+                document.getElementById('geek-comparison').innerHTML = `
+                    <div class="geek-item">
+                        <div class="geek-icon">⚙️</div>
                         <div>请先设置信息</div>
                     </div>
                 `;
@@ -1252,102 +1400,98 @@
             
             document.getElementById('total-expense').textContent = Math.round(totalExpense);
             
-            // 计算预测节省
-            const prediction = predictTomorrow();
-            if (prediction.count === '--') {
-                document.getElementById('prediction-saving').textContent = '0';
-                return;
-            }
+            // 更新宅男好物对比（与总支出关联）
+            const geekHtml = geekItems.map(item => {
+                const count = Math.floor(totalExpense / item.price);
+                return `
+                    <div class="geek-item">
+                        <div class="geek-icon">${item.icon}</div>
+                        <div>${count}${item.desc}${item.name}</div>
+                    </div>
+                `;
+            }).join('');
             
-            // 获取最近7天平均作为基准
-            const recentDays = getRecentDaysData(7);
-            const avgRecent = recentDays.length > 0 ? 
-                recentDays.reduce((sum, d) => sum + d.count, 0) / recentDays.length : 0;
-            
-            // 计算相对于预测的节省
-            const actualToday = appData.records.find(r => r.date === new Date().toDateString())?.count || 0;
-            const predictedSaving = Math.max(0, (prediction.count - actualToday) * (appData.settings.packPrice / appData.settings.packSize));
-            
-            document.getElementById('prediction-saving').textContent = Math.round(predictedSaving);
-            
-            // 更新对比项目
-            const coffeePrice = 25;
-            const pizzaPrice = 80;
-            const moviePrice = 50;
-            const gamePrice = 300;
-            
-            const coffeeCount = Math.floor(predictedSaving / coffeePrice);
-            const pizzaCount = Math.floor(predictedSaving / pizzaPrice);
-            const movieCount = Math.floor(predictedSaving / moviePrice);
-            const gameCount = Math.floor(predictedSaving / gamePrice);
-            
-            document.getElementById('saving-comparison').innerHTML = `
-                <div class="comparison-item">
-                    <div class="comparison-icon">☕</div>
-                    <div>${coffeeCount}杯咖啡</div>
-                </div>
-                <div class="comparison-item">
-                    <div class="comparison-icon">🍕</div>
-                    <div>${pizzaCount}顿披萨</div>
-                </div>
-                <div class="comparison-item">
-                    <div class="comparison-icon">🎬</div>
-                    <div>${movieCount}场电影</div>
-                </div>
-                <div class="comparison-item">
-                    <div class="comparison-icon">🎮</div>
-                    <div>${gameCount}个游戏</div>
-                </div>
-            `;
+            document.getElementById('geek-comparison').innerHTML = geekHtml;
             
             // 时间维度
-            const weekSaving = predictedSaving * 7;
-            const monthSaving = predictedSaving * 30;
+            const avgDaily = appData.records.length > 0 ? 
+                totalExpense / appData.records.length : 0;
+            const weekExpense = avgDaily * 7;
+            const monthExpense = avgDaily * 30;
             
             document.getElementById('time-dimension').innerHTML = `
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; text-align: center;">
                     <div style="background: var(--card-bg); padding: 12px; border-radius: 8px;">
-                        <div style="font-size: 18px; font-weight: 600; color: var(--primary-green);">¥${Math.round(weekSaving)}</div>
-                        <div style="font-size: 12px; color: var(--text-secondary);">周预测节省</div>
+                        <div style="font-size: 18px; font-weight: 600; color: var(--damage-color);">¥${Math.round(weekExpense)}</div>
+                        <div style="font-size: 12px; color: var(--text-secondary);">周均支出</div>
                     </div>
                     <div style="background: var(--card-bg); padding: 12px; border-radius: 8px;">
-                        <div style="font-size: 18px; font-weight: 600; color: var(--primary-green);">¥${Math.round(monthSaving)}</div>
-                        <div style="font-size: 12px; color: var(--text-secondary);">月预测节省</div>
+                        <div style="font-size: 18px; font-weight: 600; color: var(--damage-color);">¥${Math.round(monthExpense)}</div>
+                        <div style="font-size: 12px; color: var(--text-secondary);">月均支出</div>
+                    </div>
+                </div>
+                <div style="margin-top: 12px; padding: 12px; background: var(--background); border-radius: 8px; text-align: center;">
+                    <div style="font-size: 14px; color: var(--text-secondary);">
+                        💡 如果减少一半，一年可节省 ¥${Math.round(monthExpense * 6)}
                     </div>
                 </div>
             `;
         }
         
-        // 更新健康进度
+        // 更新身体破坏进度（反向显示）
         function updateHealthProgress() {
             const today = new Date().toDateString();
             const todayRecord = appData.records.find(r => r.date === today);
             const todayCount = todayRecord ? todayRecord.count : 0;
             
-            // 基于预测值vs实际值的改善程度
-            const prediction = predictTomorrow();
-            let improvementRate = 0;
+            // 基于历史数据计算破坏程度（反向逻辑）
+            const weekData = getWeekData();
+            const avgWeekCount = weekData.length > 0 ? 
+                weekData.reduce((sum, d) => sum + d.count, 0) / weekData.length : 0;
             
-            if (prediction.count !== '--' && prediction.count > 0) {
-                improvementRate = Math.max(0, (prediction.count - todayCount) / prediction.count);
+            // 破坏程度与数量正相关（反向显示）
+            let damageRate = 0;
+            if (avgWeekCount > 0) {
+                damageRate = Math.min(1, todayCount / avgWeekCount);
             }
             
-            // 更新各项健康指标
-            const healthItems = [
-                { name: 'lung', icon: '🫁', baseProgress: 20 },
-                { name: 'heart', icon: '❤️', baseProgress: 15 },
-                { name: 'taste', icon: '👅', baseProgress: 25 },
-                { name: 'energy', icon: '⚡', baseProgress: 30 }
+            // 如果数据不足，显示基础破坏程度
+            if (appData.records.length < 7) {
+                damageRate = 0.3; // 基础破坏程度
+            }
+            
+            // 更新各项身体破坏指标
+            const damageItems = [
+                { name: 'lung', icon: '🫁', baseDamage: 25 },
+                { name: 'heart', icon: '❤️', baseDamage: 20 },
+                { name: 'taste', icon: '👅', baseDamage: 30 },
+                { name: 'energy', icon: '⚡', baseDamage: 35 }
             ];
             
-            healthItems.forEach(item => {
-                const progress = Math.min(100, item.baseProgress + (improvementRate * 50));
+            damageItems.forEach(item => {
+                const damage = Math.min(100, item.baseDamage + (damageRate * 40));
                 const progressBar = document.querySelector(`[data-target="${item.name}"]`);
-                const percentElement = progressBar.closest('.health-item').querySelector('.health-percent');
+                const percentElement = progressBar.closest('.damage-item').querySelector('.damage-percent');
                 
-                progressBar.style.width = `${progress}%`;
-                percentElement.textContent = `${Math.round(progress)}%`;
+                progressBar.style.width = `${damage}%`;
+                percentElement.textContent = `${Math.round(damage)}%`;
             });
+        }
+        
+        // 更新预测
+        function updatePrediction() {
+            const prediction = predictTomorrow();
+            const predictionElement = document.getElementById('prediction-value');
+            const predictionDesc = document.querySelector('.prediction-desc');
+            
+            if (prediction.count === '--') {
+                predictionElement.textContent = '--';
+                predictionDesc.textContent = '需要更多数据进行分析';
+            } else {
+                predictionElement.textContent = `${prediction.count} 支`;
+                const confidencePercent = Math.round(prediction.confidence * 100);
+                predictionDesc.textContent = `置信度 ${confidencePercent}%`;
+            }
         }
         
         // 保存设置
@@ -1408,6 +1552,14 @@
 总记录天数：${appData.records.length} 天
 总记录数量：${appData.records.reduce((sum, r) => sum + r.count, 0)} 支
 平均每日：${appData.records.length > 0 ? (appData.records.reduce((sum, r) => sum + r.count, 0) / appData.records.length).toFixed(1) : 0} 支
+总支出：¥${appData.records.length > 0 ? Math.round(appData.records.reduce((sum, r) => sum + r.count * (appData.settings.packPrice / appData.settings.packSize), 0)) : 0}
+
+【宅男好物对比】
+${geekItems.map(item => {
+    const totalExpense = appData.records.reduce((sum, r) => sum + r.count * (appData.settings.packPrice / appData.settings.packSize), 0);
+    const count = Math.floor(totalExpense / item.price);
+    return `${item.icon} ${item.name}：${count}${item.desc} (价值¥${item.price})`;
+}).join('\n')}
 
 【详细记录】
 日期\t\t\t数量\t支出(¥)
@@ -1425,6 +1577,12 @@ ${appData.records.map(record => {
 明日预测：${predictTomorrow().count} 支
 置信度：${Math.round(predictTomorrow().confidence * 100)}%
 
+【身体破坏程度】
+肺部损伤：${appData.records.length > 0 ? '25%' : '0%'}
+心血管损伤：${appData.records.length > 0 ? '20%' : '0%'}
+味觉退化：${appData.records.length > 0 ? '30%' : '0%'}
+精力下降：${appData.records.length > 0 ? '35%' : '0%'}
+
 =====================================
 数据文件生成完成 - 烟迹终结者
 `;
@@ -1438,9 +1596,9 @@ ${appData.records.map(record => {
             URL.revokeObjectURL(url);
         }
         
-        // 导出为Excel格式（XLSM）
+        // 导出为Excel格式
         function exportToExcel() {
-            // 创建Excel XML内容
+            // 创建Excel XML内容（简化版）
             let excelContent = `<?xml version="1.0"?>
 <?mso-application progid="Excel.Sheet"?>
 <Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
