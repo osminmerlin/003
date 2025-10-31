@@ -34,6 +34,7 @@
             --success-color: #30D158;
             --warning-color: #FF9500;
             --encourage-color: #5856D6;
+            --prediction-color: #AF52DE;
         }
         
         body {
@@ -149,6 +150,34 @@
             opacity: 0.9;
         }
         
+        /* 预测卡片 */
+        .prediction-card {
+            background: linear-gradient(135deg, var(--prediction-color), #BF64E8);
+            color: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 16px rgba(175, 82, 222, 0.3);
+        }
+        
+        .prediction-title {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            opacity: 0.9;
+        }
+        
+        .prediction-value {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        
+        .prediction-desc {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
         /* 统计数字 */
         .stat-grid {
             display: grid;
@@ -227,6 +256,28 @@
         }
         
         .expense-label {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        /* 预测节省显示 */
+        .prediction-saving {
+            background: linear-gradient(135deg, var(--prediction-color), #BF64E8);
+            color: white;
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 16px;
+            text-align: center;
+            box-shadow: 0 4px 16px rgba(175, 82, 222, 0.3);
+        }
+        
+        .saving-amount {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .saving-label {
             font-size: 16px;
             opacity: 0.9;
         }
@@ -352,6 +403,33 @@
             border-color: var(--primary-green);
         }
         
+        /* 导出格式选择 */
+        .export-options {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .export-option {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--card-bg);
+        }
+        
+        .export-option.active {
+            border-color: var(--primary-green);
+            background: rgba(52, 199, 89, 0.1);
+        }
+        
+        .export-option:hover {
+            border-color: var(--primary-green);
+        }
+        
         /* 底部导航 */
         .bottom-nav {
             position: fixed;
@@ -372,13 +450,13 @@
         .nav-item {
             flex: 1;
             text-align: center;
-            padding: 8px 4px;
+            padding: 8px 2px;
             cursor: pointer;
             transition: all 0.3s ease;
             border: none;
             background: none;
             color: var(--text-secondary);
-            font-size: 11px;
+            font-size: 10px;
         }
         
         .nav-item.active {
@@ -386,13 +464,13 @@
         }
         
         .nav-icon {
-            font-size: 20px;
+            font-size: 18px;
             display: block;
             margin-bottom: 2px;
         }
         
         .nav-label {
-            font-size: 10px;
+            font-size: 9px;
             display: block;
         }
         
@@ -433,15 +511,15 @@
             }
             
             .nav-item {
-                padding: 6px 2px;
+                padding: 6px 1px;
             }
             
             .nav-icon {
-                font-size: 18px;
+                font-size: 16px;
             }
             
             .nav-label {
-                font-size: 9px;
+                font-size: 8px;
             }
         }
         
@@ -471,6 +549,13 @@
                 <button class="record-btn" onclick="recordSmoke()">🚬</button>
                 <div class="today-count" id="today-count">0</div>
                 <div class="today-label">今日记录</div>
+            </div>
+            
+            <!-- 明日预测 -->
+            <div class="prediction-card">
+                <div class="prediction-title">🔮 明日预测</div>
+                <div class="prediction-value" id="prediction-value">--</div>
+                <div class="prediction-desc">基于您的历史记录分析</div>
             </div>
             
             <div class="stat-grid">
@@ -506,14 +591,9 @@
                 <div class="expense-label">总共已支出</div>
             </div>
             
-            <div class="card">
-                <div class="card-title">💰 累计节省</div>
-                <div style="text-align: center; padding: 20px;">
-                    <div style="font-size: 36px; font-weight: 700; color: var(--primary-green); margin-bottom: 10px;">
-                        ¥<span id="total-saving">0</span>
-                    </div>
-                    <div style="color: var(--text-secondary);">相比预期支出</div>
-                </div>
+            <div class="prediction-saving">
+                <div class="saving-amount">¥<span id="prediction-saving">0</span></div>
+                <div class="saving-label">相比预测节省</div>
             </div>
             
             <div class="card">
@@ -669,12 +749,24 @@
             
             <div class="card">
                 <div class="card-title">📊 数据管理</div>
+                
+                <div class="export-options">
+                    <div class="export-option active" onclick="selectExportFormat('txt')">
+                        <div style="font-size: 24px; margin-bottom: 4px;">📝</div>
+                        <div style="font-size: 12px;">TXT格式</div>
+                    </div>
+                    <div class="export-option" onclick="selectExportFormat('xlsm')">
+                        <div style="font-size: 24px; margin-bottom: 4px;">📊</div>
+                        <div style="font-size: 12px;">Excel格式</div>
+                    </div>
+                </div>
+                
                 <button class="btn btn-secondary" onclick="exportData()" style="margin-bottom: 12px;">导出数据</button>
                 <button class="btn btn-secondary" onclick="clearData()">清除数据</button>
             </div>
             
             <div class="card" style="text-align: center; color: var(--text-secondary); font-size: 12px;">
-                <p>烟迹终结者 v1.1</p>
+                <p>烟迹终结者 v1.2</p>
                 <p>记录习惯，发现生活的小确幸</p>
             </div>
         </div>
@@ -716,6 +808,9 @@
             }
         };
         
+        // 导出格式
+        let exportFormat = 'txt';
+        
         // 鼓励话语库
         const encourageLibrary = {
             icons: ['✨', '🌟', '💫', '🎯', '🌈', '🔥', '💎', '🏆'],
@@ -745,6 +840,7 @@
             initChart();
             updateHealthProgress();
             updateEncouragement();
+            updatePrediction();
         });
         
         // 页面切换
@@ -790,11 +886,127 @@
             updateUI();
             updateChart();
             updateHealthProgress();
+            updatePrediction();
             updateEncouragement();
             
             // 触觉反馈
             if (navigator.vibrate) {
                 navigator.vibrate(50);
+            }
+        }
+        
+        // 智能预测算法
+        function predictTomorrow() {
+            if (appData.records.length < 3) {
+                return { count: '--', confidence: 0 };
+            }
+            
+            // 获取最近7天的数据
+            const recentDays = getRecentDaysData(7);
+            if (recentDays.length === 0) {
+                return { count: '--', confidence: 0 };
+            }
+            
+            // 计算多种预测方法
+            const methods = {
+                // 1. 简单平均法
+                simpleAverage: () => {
+                    const sum = recentDays.reduce((s, d) => s + d.count, 0);
+                    return sum / recentDays.length;
+                },
+                
+                // 2. 加权平均法（近期权重更高）
+                weightedAverage: () => {
+                    let weightedSum = 0;
+                    let weightSum = 0;
+                    recentDays.forEach((day, index) => {
+                        const weight = index + 1; // 越近期权重越高
+                        weightedSum += day.count * weight;
+                        weightSum += weight;
+                    });
+                    return weightedSum / weightSum;
+                },
+                
+                // 3. 趋势法
+                trendBased: () => {
+                    if (recentDays.length < 2) return recentDays[0]?.count || 0;
+                    
+                    let trend = 0;
+                    for (let i = 1; i < recentDays.length; i++) {
+                        trend += recentDays[i].count - recentDays[i-1].count;
+                    }
+                    trend = trend / (recentDays.length - 1);
+                    
+                    const lastValue = recentDays[recentDays.length - 1].count;
+                    return Math.max(0, lastValue + trend);
+                },
+                
+                // 4. 周期性分析（周模式）
+                weeklyPattern: () => {
+                    const tomorrowDayOfWeek = (new Date().getDay() + 1) % 7;
+                    const sameWeekDays = [];
+                    
+                    for (let i = 0; i < appData.records.length; i++) {
+                        const recordDate = new Date(appData.records[i].date);
+                        if (recordDate.getDay() === tomorrowDayOfWeek) {
+                            sameWeekDays.push(appData.records[i].count);
+                        }
+                    }
+                    
+                    if (sameWeekDays.length > 0) {
+                        return sameWeekDays.reduce((s, c) => s + c, 0) / sameWeekDays.length;
+                    }
+                    
+                    return recentDays[recentDays.length - 1]?.count || 0;
+                }
+            };
+            
+            // 综合多种预测结果
+            const predictions = Object.values(methods).map(method => method());
+            const avgPrediction = predictions.reduce((s, p) => s + p, 0) / predictions.length;
+            
+            // 计算置信度
+            const variance = predictions.reduce((s, p) => s + Math.pow(p - avgPrediction, 2), 0) / predictions.length;
+            const confidence = Math.max(0, 1 - (variance / (avgPrediction + 1)));
+            
+            return {
+                count: Math.round(avgPrediction),
+                confidence: confidence
+            };
+        }
+        
+        // 获取最近N天的数据
+        function getRecentDaysData(days) {
+            const now = new Date();
+            const result = [];
+            
+            for (let i = 0; i < days; i++) {
+                const date = new Date(now);
+                date.setDate(date.getDate() - i);
+                const dateStr = date.toDateString();
+                
+                const record = appData.records.find(r => r.date === dateStr);
+                if (record) {
+                    result.unshift(record); // 添加到开头，保持时间顺序
+                }
+            }
+            
+            return result;
+        }
+        
+        // 更新预测
+        function updatePrediction() {
+            const prediction = predictTomorrow();
+            const predictionElement = document.getElementById('prediction-value');
+            const predictionDesc = document.querySelector('.prediction-desc');
+            
+            if (prediction.count === '--') {
+                predictionElement.textContent = '--';
+                predictionDesc.textContent = '需要更多数据进行分析';
+            } else {
+                predictionElement.textContent = `${prediction.count} 支`;
+                const confidencePercent = Math.round(prediction.confidence * 100);
+                predictionDesc.textContent = `置信度 ${confidencePercent}%`;
             }
         }
         
@@ -960,12 +1172,12 @@
                         backgroundColor: 'rgba(52, 199, 89, 0.1)',
                         borderWidth: 3,
                         fill: true,
-                        tension: 0.6, // 平滑曲线
+                        tension: 0.6,
                         pointBackgroundColor: '#34C759',
                         pointBorderColor: '#fff',
                         pointBorderWidth: 2,
                         pointRadius: 6,
-                        cubicInterpolationMode: 'monotone' // 平滑插值
+                        cubicInterpolationMode: 'monotone'
                     }]
                 },
                 options: {
@@ -1021,7 +1233,7 @@
         function updateSavingPage() {
             if (appData.settings.packPrice === 0) {
                 document.getElementById('total-expense').textContent = '0';
-                document.getElementById('total-saving').textContent = '0';
+                document.getElementById('prediction-saving').textContent = '0';
                 document.getElementById('saving-comparison').innerHTML = `
                     <div class="comparison-item">
                         <div class="comparison-icon">⚙️</div>
@@ -1030,10 +1242,6 @@
                 `;
                 return;
             }
-            
-            const today = new Date().toDateString();
-            const todayRecord = appData.records.find(r => r.date === today);
-            const todayCount = todayRecord ? todayRecord.count : 0;
             
             // 计算总支出
             let totalExpense = 0;
@@ -1044,15 +1252,23 @@
             
             document.getElementById('total-expense').textContent = Math.round(totalExpense);
             
-            // 计算节省（基于历史平均值）
-            const allDays = Math.ceil((new Date() - new Date(appData.records[0]?.date || new Date())) / (1000 * 60 * 60 * 24)) || 1;
-            const avgPerDay = appData.records.reduce((sum, r) => sum + r.count, 0) / appData.records.length || 0;
-            const expectedTotal = avgPerDay * allDays;
-            const actualTotal = appData.records.reduce((sum, r) => sum + r.count, 0);
-            const savedCount = Math.max(0, expectedTotal - actualTotal);
-            const moneySaved = savedCount * (appData.settings.packPrice / appData.settings.packSize);
+            // 计算预测节省
+            const prediction = predictTomorrow();
+            if (prediction.count === '--') {
+                document.getElementById('prediction-saving').textContent = '0';
+                return;
+            }
             
-            document.getElementById('total-saving').textContent = Math.round(moneySaved);
+            // 获取最近7天平均作为基准
+            const recentDays = getRecentDaysData(7);
+            const avgRecent = recentDays.length > 0 ? 
+                recentDays.reduce((sum, d) => sum + d.count, 0) / recentDays.length : 0;
+            
+            // 计算相对于预测的节省
+            const actualToday = appData.records.find(r => r.date === new Date().toDateString())?.count || 0;
+            const predictedSaving = Math.max(0, (prediction.count - actualToday) * (appData.settings.packPrice / appData.settings.packSize));
+            
+            document.getElementById('prediction-saving').textContent = Math.round(predictedSaving);
             
             // 更新对比项目
             const coffeePrice = 25;
@@ -1060,10 +1276,10 @@
             const moviePrice = 50;
             const gamePrice = 300;
             
-            const coffeeCount = Math.floor(moneySaved / coffeePrice);
-            const pizzaCount = Math.floor(moneySaved / pizzaPrice);
-            const movieCount = Math.floor(moneySaved / moviePrice);
-            const gameCount = Math.floor(moneySaved / gamePrice);
+            const coffeeCount = Math.floor(predictedSaving / coffeePrice);
+            const pizzaCount = Math.floor(predictedSaving / pizzaPrice);
+            const movieCount = Math.floor(predictedSaving / moviePrice);
+            const gameCount = Math.floor(predictedSaving / gamePrice);
             
             document.getElementById('saving-comparison').innerHTML = `
                 <div class="comparison-item">
@@ -1085,18 +1301,18 @@
             `;
             
             // 时间维度
-            const weekSaving = moneySaved / Math.max(1, Math.ceil(allDays / 7));
-            const monthSaving = moneySaved / Math.max(1, Math.ceil(allDays / 30));
+            const weekSaving = predictedSaving * 7;
+            const monthSaving = predictedSaving * 30;
             
             document.getElementById('time-dimension').innerHTML = `
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; text-align: center;">
                     <div style="background: var(--card-bg); padding: 12px; border-radius: 8px;">
                         <div style="font-size: 18px; font-weight: 600; color: var(--primary-green);">¥${Math.round(weekSaving)}</div>
-                        <div style="font-size: 12px; color: var(--text-secondary);">周均节省</div>
+                        <div style="font-size: 12px; color: var(--text-secondary);">周预测节省</div>
                     </div>
                     <div style="background: var(--card-bg); padding: 12px; border-radius: 8px;">
                         <div style="font-size: 18px; font-weight: 600; color: var(--primary-green);">¥${Math.round(monthSaving)}</div>
-                        <div style="font-size: 12px; color: var(--text-secondary);">月均节省</div>
+                        <div style="font-size: 12px; color: var(--text-secondary);">月预测节省</div>
                     </div>
                 </div>
             `;
@@ -1108,13 +1324,12 @@
             const todayRecord = appData.records.find(r => r.date === today);
             const todayCount = todayRecord ? todayRecord.count : 0;
             
-            // 基于历史数据计算改善程度
-            const weekData = getWeekData();
-            const avgWeekCount = weekData.length > 0 ? weekData.reduce((sum, d) => sum + d.count, 0) / weekData.length : 0;
-            
+            // 基于预测值vs实际值的改善程度
+            const prediction = predictTomorrow();
             let improvementRate = 0;
-            if (avgWeekCount > 0) {
-                improvementRate = Math.max(0, (avgWeekCount - todayCount) / avgWeekCount);
+            
+            if (prediction.count !== '--' && prediction.count > 0) {
+                improvementRate = Math.max(0, (prediction.count - todayCount) / prediction.count);
             }
             
             // 更新各项健康指标
@@ -1157,6 +1372,229 @@
             // 更新其他页面
             updateSavingPage();
             updateHealthProgress();
+            updatePrediction();
+        }
+        
+        // 选择导出格式
+        function selectExportFormat(format) {
+            exportFormat = format;
+            document.querySelectorAll('.export-option').forEach(option => {
+                option.classList.remove('active');
+            });
+            event.target.closest('.export-option').classList.add('active');
+        }
+        
+        // 导出数据
+        function exportData() {
+            if (exportFormat === 'txt') {
+                exportToTXT();
+            } else if (exportFormat === 'xlsm') {
+                exportToExcel();
+            }
+        }
+        
+        // 导出为TXT格式
+        function exportToTXT() {
+            let content = `烟迹终结者 - 数据导出报告
+导出时间：${new Date().toLocaleString()}
+=====================================
+
+【个人信息设置】
+习惯时长：${appData.settings.habitYears} 年
+每盒价格：¥${appData.settings.packPrice}
+每盒数量：${appData.settings.packSize} 支
+
+【统计摘要】
+总记录天数：${appData.records.length} 天
+总记录数量：${appData.records.reduce((sum, r) => sum + r.count, 0)} 支
+平均每日：${appData.records.length > 0 ? (appData.records.reduce((sum, r) => sum + r.count, 0) / appData.records.length).toFixed(1) : 0} 支
+
+【详细记录】
+日期\t\t\t数量\t支出(¥)
+${appData.records.map(record => {
+    const date = new Date(record.date);
+    const expense = (record.count * (appData.settings.packPrice / appData.settings.packSize)).toFixed(2);
+    return `${date.toLocaleDateString()}\t${record.count}支\t¥${expense}`;
+}).join('\n')}
+
+【趋势分析】
+本周平均：${getWeekData().length > 0 ? (getWeekData().reduce((sum, d) => sum + d.count, 0) / getWeekData().length).toFixed(1) : 0} 支
+本月总计：${getMonthData().reduce((sum, d) => sum + d.count, 0)} 支
+
+【预测分析】
+明日预测：${predictTomorrow().count} 支
+置信度：${Math.round(predictTomorrow().confidence * 100)}%
+
+=====================================
+数据文件生成完成 - 烟迹终结者
+`;
+            
+            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `烟迹终结者数据_${new Date().toLocaleDateString().replace(/\//g, '-')}.txt`;
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+        
+        // 导出为Excel格式（XLSM）
+        function exportToExcel() {
+            // 创建Excel XML内容
+            let excelContent = `<?xml version="1.0"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+         xmlns:o="urn:schemas-microsoft-com:office:office"
+         xmlns:x="urn:schemas-microsoft-com:office:excel"
+         xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+         xmlns:html="http://www.w3.org/TR/REC-html40">
+<DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
+    <Author>烟迹终结者</Author>
+    <Created>${new Date().toISOString()}</Created>
+    <Title>烟迹终结者数据报告</Title>
+</DocumentProperties>
+<ExcelWorkbook xmlns="urn:schemas-microsoft-com:office:excel">
+    <WindowHeight>9000</WindowHeight>
+    <WindowWidth>13860</WindowWidth>
+    <WindowTopX>240</WindowTopX>
+    <WindowTopY>75</WindowTopY>
+    <ProtectStructure>False</ProtectStructure>
+    <ProtectWindows>False</ProtectWindows>
+</ExcelWorkbook>
+<Styles>
+    <Style ss:ID="Default" ss:Name="Normal">
+        <Font ss:FontName="微软雅黑" ss:Size="11" ss:Color="#000000"/>
+    </Style>
+    <Style ss:ID="Header">
+        <Font ss:Bold="1" ss:Size="14"/>
+        <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
+    </Style>
+    <Style ss:ID="Title">
+        <Font ss:Bold="1" ss:Size="12"/>
+        <Borders>
+            <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+        </Borders>
+    </Style>
+    <Style ss:ID="Number">
+        <NumberFormat ss:Format="0"/>
+    </Style>
+    <Style ss:ID="Currency">
+        <NumberFormat ss:Format="¥#,##0.00"/>
+    </Style>
+    <Style ss:ID="Date">
+        <NumberFormat ss:Format="yyyy-mm-dd"/>
+    </Style>
+</Styles>
+<Worksheet ss:Name="数据记录">
+    <Table>
+        <Column ss:Width="100"/>
+        <Column ss:Width="60"/>
+        <Column ss:Width="80"/>
+        <Column ss:Width="80"/>
+        <Column ss:Width="100"/>
+        <Row>
+            <Cell ss:StyleID="Header"><Data ss:Type="String">烟迹终结者数据报告</Data></Cell>
+        </Row>
+        <Row>
+            <Cell><Data ss:Type="String">导出时间：</Data></Cell>
+            <Cell ss:MergeAcross="3"><Data ss:Type="String">${new Date().toLocaleString()}</Data></Cell>
+        </Row>
+        <Row/>
+        <Row>
+            <Cell ss:StyleID="Title"><Data ss:Type="String">个人信息设置</Data></Cell>
+        </Row>
+        <Row>
+            <Cell><Data ss:Type="String">习惯时长：</Data></Cell>
+            <Cell><Data ss:Type="Number">${appData.settings.habitYears}</Data></Cell>
+            <Cell><Data ss:Type="String">年</Data></Cell>
+        </Row>
+        <Row>
+            <Cell><Data ss:Type="String">每盒价格：</Data></Cell>
+            <Cell><Data ss:Type="Number">${appData.settings.packPrice}</Data></Cell>
+            <Cell><Data ss:Type="String">元</Data></Cell>
+        </Row>
+        <Row>
+            <Cell><Data ss:Type="String">每盒数量：</Data></Cell>
+            <Cell><Data ss:Type="Number">${appData.settings.packSize}</Data></Cell>
+            <Cell><Data ss:Type="String">支</Data></Cell>
+        </Row>
+        <Row/>
+        <Row>
+            <Cell ss:StyleID="Title"><Data ss:Type="String">统计摘要</Data></Cell>
+        </Row>
+        <Row>
+            <Cell><Data ss:Type="String">总记录天数：</Data></Cell>
+            <Cell><Data ss:Type="Number">${appData.records.length}</Data></Cell>
+            <Cell><Data ss:Type="String">天</Data></Cell>
+        </Row>
+        <Row>
+            <Cell><Data ss:Type="String">总记录数量：</Data></Cell>
+            <Cell><Data ss:Type="Number">${appData.records.reduce((sum, r) => sum + r.count, 0)}</Data></Cell>
+            <Cell><Data ss:Type="String">支</Data></Cell>
+        </Row>
+        <Row>
+            <Cell><Data ss:Type="String">平均每日：</Data></Cell>
+            <Cell><Data ss:Type="Number">${appData.records.length > 0 ? (appData.records.reduce((sum, r) => sum + r.count, 0) / appData.records.length).toFixed(1) : 0}</Data></Cell>
+            <Cell><Data ss:Type="String">支</Data></Cell>
+        </Row>
+        <Row>
+            <Cell><Data ss:Type="String">本周平均：</Data></Cell>
+            <Cell><Data ss:Type="Number">${getWeekData().length > 0 ? (getWeekData().reduce((sum, d) => sum + d.count, 0) / getWeekData().length).toFixed(1) : 0}</Data></Cell>
+            <Cell><Data ss:Type="String">支</Data></Cell>
+        </Row>
+        <Row>
+            <Cell><Data ss:Type="String">本月总计：</Data></Cell>
+            <Cell><Data ss:Type="Number">${getMonthData().reduce((sum, d) => sum + d.count, 0)}</Data></Cell>
+            <Cell><Data ss:Type="String">支</Data></Cell>
+        </Row>
+        <Row/>
+        <Row>
+            <Cell ss:StyleID="Title"><Data ss:Type="String">详细记录</Data></Cell>
+        </Row>
+        <Row>
+            <Cell ss:StyleID="Title"><Data ss:Type="String">日期</Data></Cell>
+            <Cell ss:StyleID="Title"><Data ss:Type="String">数量(支)</Data></Cell>
+            <Cell ss:StyleID="Title"><Data ss:Type="String">支出(¥)</Data></Cell>
+            <Cell ss:StyleID="Title"><Data ss:Type="String">星期</Data></Cell>
+        </Row>
+        ${appData.records.map(record => {
+            const date = new Date(record.date);
+            const expense = (record.count * (appData.settings.packPrice / appData.settings.packSize)).toFixed(2);
+            const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
+            const weekday = weekdays[date.getDay()];
+            return `
+        <Row>
+            <Cell ss:StyleID="Date"><Data ss:Type="DateTime">${date.toISOString().split('T')[0]}</Data></Cell>
+            <Cell ss:StyleID="Number"><Data ss:Type="Number">${record.count}</Data></Cell>
+            <Cell ss:StyleID="Currency"><Data ss:Type="Number">${expense}</Data></Cell>
+            <Cell><Data ss:Type="String">星期${weekday}</Data></Cell>
+        </Row>`;
+        }).join('')}
+        <Row/>
+        <Row>
+            <Cell ss:StyleID="Title"><Data ss:Type="String">预测分析</Data></Cell>
+        </Row>
+        <Row>
+            <Cell><Data ss:Type="String">明日预测：</Data></Cell>
+            <Cell><Data ss:Type="Number">${predictTomorrow().count}</Data></Cell>
+            <Cell><Data ss:Type="String">支</Data></Cell>
+        </Row>
+        <Row>
+            <Cell><Data ss:Type="String">置信度：</Data></Cell>
+            <Cell><Data ss:Type="Number">${Math.round(predictTomorrow().confidence * 100)}</Data></Cell>
+            <Cell><Data ss:Type="String">%</Data></Cell>
+        </Row>
+    </Table>
+</Worksheet>
+</Workbook>`;
+            
+            const blob = new Blob([excelContent], { type: 'application/vnd.ms-excel.sheet.macroEnabled.12' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `烟迹终结者数据_${new Date().toLocaleDateString().replace(/\//g, '-')}.xlsm`;
+            link.click();
+            URL.revokeObjectURL(url);
         }
         
         // 数据存储
@@ -1176,18 +1614,6 @@
             }
         }
         
-        // 导出数据
-        function exportData() {
-            const dataStr = JSON.stringify(appData, null, 2);
-            const dataBlob = new Blob([dataStr], {type: 'application/json'});
-            const url = URL.createObjectURL(dataBlob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `烟迹终结者数据_${new Date().toLocaleDateString()}.json`;
-            link.click();
-            URL.revokeObjectURL(url);
-        }
-        
         // 清除数据
         function clearData() {
             if (confirm('确定要清除所有数据吗？此操作不可恢复。')) {
@@ -1203,6 +1629,7 @@
                 updateUI();
                 updateChart();
                 updateHealthProgress();
+                updatePrediction();
                 
                 // 清空表单
                 document.getElementById('habit-years').value = '';
